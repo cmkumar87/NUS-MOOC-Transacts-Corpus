@@ -7,7 +7,9 @@ import math
 class fleiss_kappa:
 	def __init__(self,data):
 		self.data = data
-
+	"""
+	From http://www.statsmodels.org/dev/stats.html
+	"""
 	def calc_fleiss_kappa(self):
 		table = 1.0 * np.asarray(self.data)   #avoid integer division
 		self.n_sub, self.n_cat =  table.shape
@@ -29,7 +31,7 @@ class fleiss_kappa:
 
 	def calc_std_dev(self):
 		"""
-		https://i1.wp.com/www.real-statistics.com/wp-content/uploads/2013/11/image102c.png
+		From https://i1.wp.com/www.real-statistics.com/wp-content/uploads/2013/11/image102c.png
 		"""
 		self.var_num_1 = (self.p_mean_exp - (2*self.n_rater-3)*(
 			self.p_mean_exp)**2)
