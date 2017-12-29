@@ -6,7 +6,7 @@ use warnings;
 
 ##
 #
-# Author : Muthu Kumar C
+# Author : Muthu Kumar Chandrasekaran
 # Created in May, 2014
 #
 ##
@@ -96,8 +96,7 @@ sub getOrderedInterventions{
 
 sub getThreadOccurenceSnapshots{
 	my ($dbh, $courseid) = @_;
-	# my $query = "select threadid,count(distinct snapshot_time) from thread_snapshots 
-					# where courseid = '$courseid' group by threadid";
+
 	my $query	= "select t.docid, count(distinct snapshot_time) 
 					from thread_snapshots s, thread t 
 					where s.courseid = '$courseid' and s.threadid = t.id 
@@ -112,30 +111,6 @@ sub getRankOneThread{
 			where courseid = '$courseid' and forumid = '$forumid' 
 			group by intervened_thread";
 }
-
-# sub getPostVote{
-	# my ($dbh, $course, $thread, $forum, $post) = @_;
-	# my $qry_post = "select votes from post where courseid = $courseid
-	# thread_id = $thread and forumid = $forumid and id = $post";
-	
-	# my $qry_cmnt = "select votes from comment where courseid = $courseid
-	# thread_id = $thread and forumid = $forumid and id = $post";
-	
-	# my $postvote	= $dbh->selectcol_arrayref($qry_post) or die "Model-- getThreadVotes cannot prepare $qry_post";
-	# my $cmntvote	= $dbh->selectcol_arrayref($qry_cmnt) or die "Model-- getThreadVotes cannot prepare $qry_cmnt";
-	
-	# if ( @{$postvote}[0] == 0){
-		# if ( @{$cmntvote}[0] == 0){
-			# return 0;
-		# }
-		# else{
-			# return @{$cmntvote}[0];
-		# }		
-	# }
-	# else{
-		# return @{$postvote}[0];
-	# }
-# }
 
 sub getThreadVotes{
 	my ($dbh, $courses) = @_;
@@ -419,151 +394,6 @@ sub getterms{
 	return $hashref;
 }
 
-sub getalltfs{
-	my ($dbh, $tftab, $course_samples, $terms, $stem, $length) = @_;
-	
-	if(!defined $dbh){
-		print "\n database handler undefined in getalltfs";
-		exit(0);
-	}
-	
-	if(!defined $tftab){
-		print "\n tftab undefined in getalltfs";
-		exit(0);		
-	}
-	
-	if(!defined $course_samples || (keys %$course_samples == 0)){
-		print "\n course_samples undefined or 0 in getalltfs";
-		exit(0);		
-	}
-	
-	if(!defined $terms || (keys %$terms == 0)){
-		print "\n terms undefined or 0 in getalltfs";
-		exit(0);		
-	}
-	
-	my $termTFquery = "select termid, courseid, threadid, tf from $tftab
-						where courseid in ( ";
-
-	foreach my $courseid (keys %{$course_samples} ){
-		$termTFquery .= "\'$courseid\', ";
-	}
-	$termTFquery =~ s/,\s?$//;
-	$termTFquery .= " )";
-	
-	if (defined $length){
-		$termTFquery .= " and length(term) > $length";
-	}
-	
-	print "\nExecuting... $termTFquery";
-	
-	my @termTFrows =  @{$dbh->selectall_arrayref($termTFquery)};
-	#print "\n Model.pm termtfrows " .(scalar @termTFrows)."\n";
-	
-	my %termfreq = ();
-	foreach my $tfrow (@termTFrows ){
-		my $courseid	= $tfrow->[1];
-		my $threadid	= $tfrow->[2];
-
-		my $termid		= $tfrow->[0];
-		my $tf 			= $tfrow->[3];
-		
-		if(defined $terms && !exists $terms->{$termid}){
-			next;
-		}		
-		
-		if(!exists $termfreq{$courseid}{$threadid}{$termid}){
-			$termfreq{$courseid}{$threadid}{$termid} = $tf;
-		}
-		else{
-			$termfreq{$courseid}{$threadid}{$termid} += $tf;
-		}
-	}
-	
-	if(keys %termfreq == 0){
-		print "Exception: TFs are empty in Model.pm";
-		exit(0);
-	}
-	
-	return \%termfreq;
-}
-
-sub getallTFsbyPost{
-	my ($dbh, $tftab, $course_samples, $terms, $stem, $length) = @_;
-	
-	if(!defined $dbh){
-		print "\n database handler undefined in getalltfs";
-		exit(0);
-	}
-	
-	if(!defined $tftab){
-		print "\n tftab undefined in getalltfs";
-		exit(0);		
-	}
-	
-	if(!defined $course_samples || (keys %$course_samples == 0)){
-		print "\n course_samples undefined or 0 in getalltfs";
-		exit(0);		
-	}
-	
-	if(!defined $terms || (keys %$terms == 0)){
-		print "\n terms undefined or 0 in getalltfs";
-		exit(0);		
-	}
-	
-	my $termTFquery = "select termid, courseid, threadid, tf, postid, commentid, ispost from $tftab
-						where courseid in ( ";
-
-	foreach my $courseid (keys %{$course_samples} ){
-		$termTFquery .= "\'$courseid\', ";
-	}
-	$termTFquery =~ s/,\s?$//;
-	$termTFquery .= " )";
-	
-	if (defined $length){
-		$termTFquery .= " and length(term) > $length";
-	}
-	
-	print "\nExecuting... $termTFquery";
-	
-	my @termTFrows =  @{$dbh->selectall_arrayref($termTFquery)};
-	#print "\n Model.pm termtfrows " .(scalar @termTFrows)."\n";
-	
-	my %termfreq = ();
-	foreach my $tfrow (@termTFrows ){
-		my $termid = $tfrow->[0];
-		my $courseid = $tfrow->[1];
-		my $threadid = $tfrow->[2];
-
-		my $tf = $tfrow->[3];
-		my $postid = $tfrow->[4];
-		my $commentid = $tfrow->[5];
-		my $ispost = $tfrow->[6];
-		
-		if ($ispost eq 0){
-			$postid =	$commentid;
-		}
-		
-		if(defined $terms && !exists $terms->{$termid}){
-			next;
-		}		
-		
-		if(!exists $termfreq{$courseid}{$threadid}{$postid}{$termid}){
-			$termfreq{$courseid}{$threadid}{$postid}{$termid} = $tf;
-		}
-		else{
-			die "Exception: Duplicate term record for term $termid \t $threadid \t $courseid ";
-		}
-	}
-	
-	if(keys %termfreq == 0){
-		print "Exception: Model.pm .. getallTFsbyPost.. TFs are empty";
-		exit(0);
-	}
-	
-	return \%termfreq;
-}
-
 sub gettermCourse{
 	my ($dbh) = @_;
 
@@ -573,149 +403,10 @@ sub gettermCourse{
 	return \%terms_per_course;
 }
 
-sub getCoursewisetermIDF{
-	my ($dbh, $freqcutoff, $stem, $courses, $normalize) = @_;
-	
-	if(!defined $courses){
-		print "Exception: undef $courses in getCoursewisetermIDF in Model.pm";
-		exit(0);
-	}
-	
-	my $terms ;
-	my $term_course ;
-	foreach my $course (@$courses){
-		my $termIDFquery	 = "select termid, term, df, courseid from termIDF ";
-		$termIDFquery .= " where courseid = \'$course\'";
-		if(defined $freqcutoff){
-			$termIDFquery .= "  and df > $freqcutoff ";
-		}
-		my %terms_per_course = %{$dbh->selectall_hashref($termIDFquery,'termid')};
-		($terms,$term_course)	= Model::updateHash(\%terms_per_course,$terms,$term_course);
-		print "\n Executing $termIDFquery...";
-	}
-
-	# print "\n-- $terms->{365}{'termid'}";
-	# print "\t $terms->{365}{'courseid'}";
-	# print "\t $terms->{365}{'term'}";
-	# print "\n -- $terms->{'casebasedbiostat-002'}{365}{'formula'}";
-	# print "\n $terms->{'bioelectricity-002'}{365}{'formula'}";
-	
-	return ($terms,$term_course);
-}
-
 sub getForumname{
 	my ($dbh,$forumid,$courseid) = @_;
 	my $forumname = @{$dbh->selectcol_arrayref("select forumname from forum where id = $forumid and courseid = \'$courseid\'")}[0];
 	return $forumname;
-}
-
-sub getalltermIDF{
-	my ($dbh, $freqcutoff, $stem, $courses, $normalize) = @_;
-	
-	if(!defined $normalize){
-		die "Exception: getalltermIDF: normalize not defined \n";
-	}
-
-	# if(!defined $courses){
-		# die "Exception: getalltermIDF: courses not defined \n";
-	# }
-	
-	my $termIDFquery;
-	
-	if($normalize){
-		$termIDFquery = "select termid,term,idf,courseid from termIDF ";
-		$termIDFquery .= "where courseid = ?";
-		if(defined $freqcutoff){
-			$termIDFquery .= "and df > $freqcutoff ";
-		}
-	}
-	else{
-		$termIDFquery	 = "select termid,term,sum(df) sumdf from termIDF ";
-		
-		if(defined $courses){
-			$termIDFquery	.= "where courseid in ( ";
-			foreach my $course (@$courses){
-				$termIDFquery .= " \'$course\',";
-			}
-			$termIDFquery  =~ s/\,$//;
-			$termIDFquery .= " ) ";
-		}
-		
-		$termIDFquery .= "group by termid ";
-		
-		if(defined $freqcutoff){
-			$termIDFquery .= "having sumdf > $freqcutoff ";
-		}
-	}
-	
-	print "\nExecuting IDFquery... $termIDFquery\n";
-	
-	my %terms = ();
-	if($normalize){
-		my $termsth = $dbh->prepare($termIDFquery) or die"Prepare failed\n$termIDFquery";
-		foreach my $courseid (@$courses){
-			$termsth->execute($courseid) or die "Execute failed \n $termIDFquery";
-			my $termrows = $dbh->fetchall_arrayref();
-			if (scalar @$termrows == 0){
-				die "Exception: termIDFs are empty for $courseid! Normalize: $normalize. 
-										Check the tables and the query!\n";
-			}
-			foreach my $termrow (\@$termrows){
-				my $termid		= $termrow->[0];
-				#my $term		= $termrow->[1];
-				my $idf			= $termrow->[2];
-				my $courseid	= $termrow->[3];	
-				
-				$terms{$courseid}{$termid} = $idf;
-			}
-		}
-	}
-	else{
-		  %terms = %{$dbh->selectall_hashref($termIDFquery,'termid')};
-	}
-	return \%terms;
-}
-
-sub gettermIDF{
-	my ($dbh,$termid,$stem) = @_;	
-	my $query = "select idf from termIDF where termid = $termid ";
-	# if(!$stem){
-		# $query .= "and stem = $stem";
-	# }
-	return @{$dbh->selectcol_arrayref($query)}[0];
-}
-
-sub findMaxPostTimeInterval{
-	my ($dbh, $threads) = @_;
-	my $maxpost = $dbh->prepare("select max(post_time) from post where thread_id = ? and courseid=?");
-	my $minpost = $dbh->prepare("select min(post_time) from post where thread_id = ? and courseid=?");
-	my $mincom = $dbh->prepare("select max(post_time) from comment where thread_id = ? and courseid=?");
-	my $max_diff = 0;
-		
-	foreach(@$threads){
-		my $threadid = $_->[0];
-		my $courseid = $_->[1];
-		$maxpost->execute($threadid,$courseid);
-		$minpost->execute($threadid,$courseid);
-		$mincom->execute($threadid,$courseid);
-		my @maxpostarr = @{$maxpost->fetchrow_arrayref()}[0];
-		my @minpostarr = @{$minpost->fetchrow_arrayref()}[0];
-		my @maxcomarr = @{$mincom->fetchrow_arrayref()}[0];
-		my $maxposttime = $maxpostarr[0];
-		my $minposttime = $minpostarr[0];
-		my $maxcomtime = $maxcomarr[0];
-		
-		if (!defined  $minposttime || !defined  $maxposttime) {	next; }
-		
-		my $maxtime = $maxposttime;
-		if (defined $maxcomtime){	$maxtime = ($maxcomtime > $maxtime)? $maxcomtime:$maxtime	};
-		
-		my $diff = $maxtime - $minposttime;
-		$max_diff = ($diff > $max_diff) ? $diff : $max_diff;
-	}
-
-	print $max_diff;
-	return $max_diff;
 }
 
 sub updateHash{
