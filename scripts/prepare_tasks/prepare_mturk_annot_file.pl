@@ -205,15 +205,17 @@ printHeaders($csvfh, $headers);
 
 my $forumidsquery	= "select id,courseid,forumname from forum ";
  $forumidsquery		= Model::appendListtoQuery($forumidsquery,\@courses, 'courseid ','where ');
- # $forumidsquery	.= "and forumname in('Lecture','Exam','General','Project','Discussion','PeerA')";
+ # $forumidsquery	.= "and forumname in('Lecture','Homework','Exam','General','Project','Discussion','PeerA')";
+ $forumidsquery	.= "and forumname in('PeerA')";
  # $forumidsquery	.= "and forumname in('Homework')";
- $forumidsquery	.= "and forumname in('Lecture')";
+ # $forumidsquery	.= "and forumname in('Lecture')";
  # $forumidsquery		.= "and forumname in('Exam')";
  # $forumidsquery		.= "and forumname in('Project','Discussion','PeerA')";
  # $forumidsquery	.= "and forumname in('General')";
  # $forumidsquery	.= "and forumname in('Project','Discussion')";
  # $forumidsquery	.= "and forumname in('Project','Discussion','PeerA')";
 
+print "\n Executing $forumidsquery";
 my $forumrows		= $dbh->selectall_arrayref($forumidsquery) or die "Courses query failed! ";
 								
 foreach my $forumrow ( @$forumrows ){
@@ -286,9 +288,9 @@ foreach my $forumrow ( @$forumrows ){
 		$poststh->execute($threadid,$coursecode,$forumid) or die $DBI::errstr;
 		my $posts = $poststh->fetchall_hashref('post_order');
 		
-		# if ($poststh->rows == 0) {
-			# print "\n No post records for $threadid $coursecode $forumid";
-		# }
+		if ($poststh->rows == 0) {
+			print "\n No post records for $threadid $coursecode $forumid";
+		}
 		my $number_of_posts = $poststh->rows;
 		
 		foreach my $order ( sort {$a <=> $b } keys %$posts ){
@@ -304,6 +306,7 @@ foreach my $forumrow ( @$forumrows ){
 		
 		if ($number_of_posts < 1 ){ next;}
 		
+		print $csvfh "\"$forumid\"";
 		print $csvfh "\"$forumname\"";
 		print $csvfh "\,";
 		
