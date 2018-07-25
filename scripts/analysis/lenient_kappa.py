@@ -55,12 +55,16 @@ def get_kappa(df):
         filter_col = [col for col in df if col.startswith('Answer')]
         counts = (df.loc[df['Input.threadtitle'] == thread, \
             filter_col].count(axis = 0))
+        #Ignore the 'none's unless everyone has answered that
         if counts['Answer.noreply']!=df.loc[df['Input.threadtitle']==thread].shape[0]:
             del counts['Answer.noreply']
         counts_sorted = (counts.sort_values(ascending = False))
         #print(counts_sorted)
         post_max_agreement = (counts_sorted.argmax())
         print(post_max_agreement)
+        print(np.max(counts))
+        #post_max_agreement = np.argwhere(counts == np.max(counts)).flatten().tolist()
+        #print(post_max_agreement)
         #df[filter_col] = df[filter_col].fillna(0)
         conn = sqlite3.connect('cs6207.db')
         c = conn.cursor()
