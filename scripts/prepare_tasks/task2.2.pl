@@ -6,7 +6,7 @@ require 5.0;
 ##
 #
 # Author : Radhika Nikam, modified from script xx by Muthu
-# Script to genrate MTURK CSV annotation file for task 2.1
+# Script to genrate MTURK CSV annotation file for task 2.2
 # Created in Mar, 2014
 #
 ##
