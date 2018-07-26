@@ -5,8 +5,8 @@ require 5.0;
 
 ##
 #
-# Author : Muthu Kumar C
-# compute tf and df for the corpus of threads
+# Author : Radhika Nikam, modified from script xx by Muthu
+# Script to genrate MTURK CSV annotation file for task 2.1
 # Created in Mar, 2014
 #
 ##
