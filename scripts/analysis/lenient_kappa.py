@@ -6,9 +6,14 @@ from statsmodels.stats.inter_rater import aggregate_raters
 import mysql.connector, sqlite3
 pd.options.mode.chained_assignment = None
 
-"""Calculates Lenient Fleiss Kappa for given input file and course ID
+"""
+Calculates Lenient Fleiss Kappa for given input file and course ID
 
-Run: python lenient_kappa.py -f= **file name** -c=**course id**"""
+Run: python lenient_kappa.py -f= **file name** -c=**course id**
+"""
+# SET either cs6207.db or nusdata.db in below line 
+DB = 'cs6207.db'
+
 
 class fleiss_kappa:
         def __init__(self,data):
@@ -17,36 +22,43 @@ class fleiss_kappa:
         def calc_fleiss_kappa(self):
 
                 #From http://www.statsmodels.org/dev/stats.html
+                
                 warnings.simplefilter("error", RuntimeWarning)
                 table = 1.0 * np.asarray(self.data)   #avoid integer division
+                #print(table)
                 self.n_sub, self.n_cat =  table.shape
                 self.n_total = table.sum()
+                #print(self.n_total)
                 self.n_rater = table.sum(1)
+                #print(self.n_rater)
                 self.n_rat = self.n_rater.max()
                 assert self.n_total == self.n_sub * self.n_rat
 
                 self.p_cat = table.sum(0) / self.n_total
-                #print(table)
+                #print(self.p_cat)
                 self.table2 = table * table
+                #print(self.table2)
                 self.p_rat = (self.table2.sum(1) - self.n_rat) / (self.n_rat * (self.n_rat - 1))
                 self.p_mean = self.p_rat.mean()
-
+                #print(self.p_rat)
+                #print(self.p_mean)
                 self.p_mean_exp = (self.p_cat*self.p_cat).sum()
-                # print(self.p_cat)
-                # print(self.p_mean,self.p_mean_exp)
+                #print(self.p_cat)
+                #print(self.p_mean,self.p_mean_exp)
                 try:
                     #print(self.p_mean,self.p_mean_exp)
                     kappa = (self.p_mean - self.p_mean_exp) / (1- self.p_mean_exp)
-                        
-                    
+
+
                 except RuntimeWarning:
-                    kappa = 1.0
-                   
+                    kappa = 1.0 #Fix for cases where this is only one post (1 subject), chance agreements 
+                                #also equal 1 making the kappa=NaN.
+
                 return kappa
 
         def calc_std_dev(self):
 
-#From https://i1.wp.com/www.real-statistics.com/wp-content/uploads/2013/11/image102c.png
+                #From https://i1.wp.com/www.real-statistics.com/wp-content/uploads/2013/11/image102c.png
 
                 self.var_num_1 = (self.p_mean_exp - (2*self.n_rater-3)*(self.p_mean_exp)**2)
                 self.var_num_2 = 2*(self.n_rater-2)*(self.p_cat**3).sum()
@@ -58,139 +70,215 @@ class fleiss_kappa:
 
 
 def get_kappa_marking(df):
-    df = df.loc[df['AssignmentStatus'] != 'Rejected']
-    threads = df['Input.threadtitle'].unique()
-    entries = []
-    fks = []
+
+    """ Lenient Fleiss' Kappa for marking task - Task 1.1 """
+
+    df = df.loc[df['AssignmentStatus'] != 'Rejected'] #Taking only the mturk assignments that were accepted
+    threads = df['Input.threadtitle'].unique()  #Getting a list of unique threads in the list
+    fks = [] #List of kappas in each thread in the given batch
+    if 'Answer.noreply' not in df.columns:
+        df['Answer.noreply'] = ""
 
     for thread in threads:
+        
+        ############################  Get the total number of posts+comments in that thread  ############################
+        
+        try:    
+            c = conn.cursor()
+
+            c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id where \
+                original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like '+'"%%'+ \
+                thread+'%%"')
+            thread_id = c.fetchone()
+            
+            c.execute('select count(1) from post2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' and \
+                courseid like '+'"%%'+course+'%%"' )
+
+            post2 = c.fetchone()
+            c.execute('select count(1) from comment2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' and \
+                courseid like '+'"%%'+course+'%%"' )
+            comment2 = c.fetchone()
+            length = post2[0]+comment2[0]
+        
+        except:
+            continue     
+
+        #################################################################################################################
+
+        ###############################  Selecting post(s) with maximum markings  ########################################
+
         filter_col = [col for col in df if col.startswith('Answer')]
         counts = (df.loc[df['Input.threadtitle'] == thread, \
             filter_col].count(axis = 0))
-        
+
         counts_sorted = (counts.sort_values(ascending = False))
-        
+
         post_max_agreement = np.argwhere(counts == np.max(counts)).flatten().tolist()
-        #print(post_max_agreement)
+
         post_max_agreement = ((counts.iloc[post_max_agreement].index.values))
-        
+        #print(post_max_agreement)
         df = df.replace('unclear',99)
         df = df.replace('none',99)
-        conn = sqlite3.connect('cs6207.db')
-        c = conn.cursor()
-        try:
-            c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id where original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like '+'"%%'+thread+'%%"')
-            thread_id = c.fetchone()
-            #print(thread_id)
-            c.execute('select count(1) from post2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' and courseid like '+'"%%'+course+'%%"' )
 
-            post2 = c.fetchone()
-            c.execute('select count(1) from comment2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' and courseid like '+'"%%'+course+'%%"' )
-            comment2 = c.fetchone()
-            length = post2[0]+comment2[0]
-            #print(length)
-            df1 = df.loc[df['Input.threadtitle'] == thread]
-            df2 = pd.DataFrame()
-          # print(df1[post_max_agreement])
-            for p in (post_max_agreement):
-                #print(p)
-                df2['Agree'+str(p)] = df1.loc[:,p].fillna(0).astype(bool).astype(int)
-                #df2['Disagree' + str(p)] = ~df2['Agree'+ str(p)]
-            for i in range(length-len(post_max_agreement)):
-                df2['Disagree'+str(i)] = 0
-            
-            #print(df2)
+        ##################################################################################################################
+        
+        #####################  Calculating Fleiss Kappa using the fleiss_kappa class above  #############################
+        
+        #df1 = df.loc[df['Input.threadtitle'] == thread]
+        df1 = pd.DataFrame()
+      
+        
+        for i in range(length):
+            if 'Answer.'+ str(i+1) in df.columns:
+                    df1['Answer.'+ str(i+1)]  = 0
+            else:
+                pass
+        df1[post_max_agreement] = df.loc[df['Input.threadtitle'] == thread, post_max_agreement]  
+        
+        df1['Answer.noreply'] = 0
 
-            aggregate = aggregate_raters(df2.T)
-            fk = fleiss_kappa(aggregate[0])
-            #print(aggregate)
-            fks.append(fk.calc_fleiss_kappa())
-            print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa())+"\n")
-        except:
-            pass    
-           
-    print("Average Kappa:"+str(np.mean(fks)))
+        #print(df1.fillna(0).astype(int))
+
+        aggregate = aggregate_raters(df1.fillna(0).astype(int).T)
+        fk = fleiss_kappa(aggregate[0])
+        #print(aggregate)
+        fks.append(fk.calc_fleiss_kappa())
+        print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa())+"\n")
+
+
+        #################################################################################################################
+
+    print("\nAverage Kappa:"+str(np.mean(fks)))
 
 
 def get_kappa_categorization(df):
+
+    """ Fleiss Kappa for categorisation tasks - Task 2.1 and Task 2.2 """
+
     df = df.loc[df['AssignmentStatus'] != 'Rejected']
     threads = df['Input.threadtitle'].unique()
+    #print(len(threads))
     entries = []
     fks = []
+    ##########################  Mapping the categories to numbers for input into kappa  ####################################
+
     cat_to_num_2 = { # Categories for Task 2.1
                       "resolves":1,
                       "elaborates":2,
                       "requests":3,
                       "social":4,
-                      "none":99,
+                      "none":5,
                       #Categories for Task 2.2
-                      "clarifies":5,
-                      "extension":6,
-                      "juxtaposition":7,
-                      "refinement":8,
-                      "critique":9,
-                      "agreement":10,
-                      "disagreement":11,
-                      "generic":12,
-                      "appreciation":13,
-                      "completion":14,
-                      "nota":99,
-                }
 
-    if 'Answer.noreply' not in df.columns:
+                      #elaborates
+                      "clarifies":1,
+                      "extension":2,
+                      "juxtaposition":3,
+                      "refinement":4,
+                      "critique":5,
+                      
+                      #resolves
+                       "agreement":1,
+                      "disagreement":2,
+                      "generic":3,
+                      "appreciation":4,
+                      "completion":5,
+
+                      "none":6,
+                      "nota":6,
+
+                }
+                
+    ########################################################################################################################             
+
+    if 'Answer.noreply' not in df.columns: # Add Answer.noreply if it does not exist in the dataframe
         df['Answer.noreply'] = ""
     marked_posts = [col for col in df.columns if 'Answer.' in col]
-    #print(marked_posts)
-    for post in marked_posts:
-        df[post] = df[post].map(cat_to_num_2).fillna(0).astype(int)
 
+    for post in marked_posts:
+        df[post] = df[post].map(cat_to_num_2) # Substituting the categories to numbers
+    
     for thread in threads:
-        filter_col = [col for col in df if col.startswith('Answer')]
-        df1 = df[filter_col]
-        df[filter_col] =df[filter_col].replace(0, np.nan)
+        
+            ############################  Get the total number of posts+comments in that thread  ############################
+        
+        try: 
+            c = conn.cursor()
+
+            c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id where \
+                original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like '+'"%%'+thread+'%%"')
+            thread_id = c.fetchone()
+            #print(thread_id)
+            c.execute('select count(1) from post2 where thread_id like'+'"%%'+str(thread_id[0])+'%%"'+ ' and \
+                courseid like '+'"%%'+course+'%%"' )
+            post2 = c.fetchone()
+            c.execute('select count(1) from comment2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' and \
+                courseid like '+'"%%'+course+'%%"' )
+            comment2 = c.fetchone()
+            length = post2[0]+comment2[0]
+        
+        except:
+            continue    
+        
+        #################################################################################################################
+
+        ###############################  Selecting post(s) with maximum markings  #######################################
+
         counts = (df.loc[df['Input.threadtitle'] == thread, \
-            filter_col].count(axis = 0))
-        #Ignore the 'none's unless everyone has answered that
-        if counts['Answer.noreply']!=df.loc[df['Input.threadtitle']==thread].shape[0]:
-            del counts['Answer.noreply']
+            marked_posts].count(axis = 0))
+
         counts_sorted = (counts.sort_values(ascending = False))
-        #print(counts_sorted)
+
         post_max_agreement = np.argwhere(counts == np.max(counts)).flatten().tolist()
-        #print(post_max_agreement)
         post_max_agreement = ((counts.iloc[post_max_agreement].index.values))
-        post_max_agreement=np.append(post_max_agreement,'Answer.noreply')
+
+        #################################################################################################################
+
+        #####################  Calculating Fleiss Kappa using the fleiss_kappa class above  #############################
         #print(post_max_agreement)
-        length = len(filter_col)
-        #print(length)
-        df1 = df.loc[df['Input.threadtitle'] == thread]
-        df2 = pd.DataFrame()
-        for p in (post_max_agreement):
-           #print(p)
-           df2['Agree'+str(p)] = df1.loc[:,p].fillna(0)#.astype(int)#.astype(bool).astype(int)
-          
-        aggregate = aggregate_raters(df2.T)
+        df1 = pd.DataFrame()
+        for i in range(length) :
+            if 'Answer.'+ str(i+1)+'_discourse_type' in df.columns:
+                    df1['Answer.'+ str(i+1)+'_discourse_type']  = 0
+            else:
+                pass
+        df1[post_max_agreement] = df.loc[df['Input.threadtitle'] == thread, post_max_agreement]
+        df1['Answer.noreply'] = 0
+        #print(df1)
+        aggregate = aggregate_raters(df1.fillna(0).astype(int).T)
         #print(aggregate[0])
         fk = fleiss_kappa(aggregate[0])
         fks.append(fk.calc_fleiss_kappa())
-        #print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa())+"\n")
-    print("Average Kappa:"+str(np.mean(fks)))
-    #print(str(np.mean(fks))+',')
-
-
+        print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa()))
+  
+    #################################################################################################################
         
+    print("\nAverage Kappa:"+str(np.mean(fks))+"\n")
 
+
+if __name__ == "__main__":
 
    
-if __name__ == "__main__":
     fks = []
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", "-f", type=str )
-    parser.add_argument("--course","-c", type=str )
+    parser.add_argument("--courseid","-c", type=str )
     parser.add_argument("--task","-t", type=str )
     args = parser.parse_args()
-    course=args.course
-    #print(os.getcwd())
-    files = glob.glob('/Users/radhikanikam/Desktop/Raw_files_courses_copy/2.1/'+ str(course)+'*.csv')
+    course=args.courseid
+    #print(courses_in_DB)
+    conn = sqlite3.connect(DB)
+    n = conn.cursor()
+    courses_in_DB = n.execute('select distinct courseid from post2').fetchall()
+    course_match = "".join([c[0] for c in courses_in_DB if c[0]== course])
+    
+    ### Make sure that course mentioned in arguments is valid and a complete courseID
+    if course_match!=course:
+        parser.error('Incomplete or Invalid Course ID')
+    
+    ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
+        
+    files = glob.glob('/Users/radhikanikam/Desktop/Raw_files_courses_copy/1.1/'+ str(course)+'*.csv')
 
     #print(files)
     if args.file is not None:
