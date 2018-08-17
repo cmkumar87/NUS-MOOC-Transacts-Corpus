@@ -133,9 +133,10 @@ def get_kappa_marking(df):
                     df1['Answer.'+ str(i+1)]  = 0
             else:
                 pass
+        df1['Answer.noreply'] = 0
         df1[post_max_agreement] = df.loc[df['Input.threadtitle'] == thread, post_max_agreement]  
         
-        df1['Answer.noreply'] = 0
+        
 
         #print(df1.fillna(0).astype(int))
 
@@ -242,8 +243,9 @@ def get_kappa_categorization(df):
                     df1['Answer.'+ str(i+1)+'_discourse_type']  = 0
             else:
                 pass
-        df1[post_max_agreement] = df.loc[df['Input.threadtitle'] == thread, post_max_agreement]
         df1['Answer.noreply'] = 0
+        df1[post_max_agreement] = df.loc[df['Input.threadtitle'] == thread, post_max_agreement]
+        
         #print(df1)
         aggregate = aggregate_raters(df1.fillna(0).astype(int).T)
         #print(aggregate[0])
