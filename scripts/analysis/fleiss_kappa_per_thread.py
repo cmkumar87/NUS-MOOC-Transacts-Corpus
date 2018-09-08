@@ -7,7 +7,7 @@ from statsmodels.stats.inter_rater import aggregate_raters
 import os,re,sys
 import glob, argparse
 from statsmodels.stats.inter_rater import aggregate_raters
-import mysql.connector, sqlite3
+import sqlite3
 
 """
 Calculates Strict Fleiss Kappa for given input file and course ID
@@ -249,12 +249,21 @@ if __name__ == "__main__":
     parser.add_argument("--file", "-f", type=str )
     parser.add_argument("--courseid","-c", type=str )
     parser.add_argument("--task","-t", type=str )
+    parser.add_argument("--dbname","-db", type=str)
     args = parser.parse_args()
     course=args.courseid
 
-    conn = sqlite3.connect(DB)
+    DB = args.dbname
+    if DB == None:
+        print("Please enter a db name with option -db")    
+        exit()
+
+    dirname = os.path.dirname(os.path.realpath('__file__'))
+    conn = sqlite3.connect(os.path.join(dirname,'../../data/',str(DB)+'.db'))
+    #conn = sqlite3.connect(DB)
+    print(DB)
     n = conn.cursor()
-    courses_in_DB = n.execute('select distinct courseid from post2').fetchall()
+    courses_in_DB = n.execute('select distinct courseid from thread').fetchall()
     #print(os.getcwd())
     course_match = "".join([c[0] for c in courses_in_DB if c[0]== course])
     
@@ -265,7 +274,7 @@ if __name__ == "__main__":
 
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
 
-    files = glob.glob('/Users/radhikanikam/Desktop/Raw_files_courses_copy/1.1/'+ str(course)+'*.csv')
+    files = glob.glob('../../../raw/annotated-nus-mooc-corpus/raw/raw_files/1.1/'+ str(course)+'*.csv')
 
     #print(files)
     if args.file is not None:
@@ -277,7 +286,7 @@ if __name__ == "__main__":
             get_kappa_categorization(df)
     else:
         for f in files:
-            df=pd.read_csv(f)
+            df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):    # Marking Task
                 get_kappa_marking(df)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):   #Categorisation Task
