@@ -275,20 +275,25 @@ if __name__ == "__main__":
 
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
 
-    files = glob.glob('../../../raw/annotated-nus-mooc-corpus/raw/raw_files/1.1/'+ str(course)+'*.csv')
+    files = glob.glob('../../../annotated-nus-mooc-corpus/raw_files/1.1/'+ str(course)+'*.csv')
+    print(str(len(files)))
 
     #print(files)
     if args.file is not None:
         df = pd.read_csv(args.file)
 
         if args.task in ("1.1", "marking", "mark", "m"): # Marking Task
+            print('Computing kappa for marking')
             get_kappa_marking(df)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"): #Categorisation Task
             get_kappa_categorization(df)
     else:
+        print('Found several files for ' + course)
         for f in files:
+            print('Reading'+f)
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):    # Marking Task
+                print('Computing kappa for marking')
                 get_kappa_marking(df)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):   #Categorisation Task
                 get_kappa_categorization(df)
