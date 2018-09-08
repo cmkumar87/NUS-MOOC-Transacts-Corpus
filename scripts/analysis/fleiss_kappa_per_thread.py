@@ -257,6 +257,7 @@ if __name__ == "__main__":
     courses_in_DB = n.execute('select distinct courseid from post2').fetchall()
     #print(os.getcwd())
     course_match = "".join([c[0] for c in courses_in_DB if c[0]== course])
+    conn.close()
     
     ### Make sure that course mentioned in arguments is valid and a complete courseID
 
