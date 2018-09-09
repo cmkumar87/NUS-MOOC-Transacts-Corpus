@@ -261,7 +261,6 @@ if __name__ == "__main__":
     dirname = os.path.dirname(os.path.realpath('__file__'))
     conn = sqlite3.connect(os.path.join(dirname,'../../data/',str(DB)+'.db'))
     #conn = sqlite3.connect(DB)
-    print(DB)
     n = conn.cursor()
     courses_in_DB = n.execute('select distinct courseid from thread').fetchall()
     #print(os.getcwd())

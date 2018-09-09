@@ -273,30 +273,38 @@ if __name__ == "__main__":
     course = args.courseid
     #print(courses_in_DB)
     DB = args.dbname
+    if DB is None:
+        print("Please enter a valid sqlite database file name")
+        exit(0)
+
     dirname = os.path.dirname(os.path.realpath('__file__'))
-    conn = sqlite3.connect(os.path.join(dirname,'../../data/','cs6207.db'))
+    conn = sqlite3.connect(os.path.join(dirname,'../../data/',DB+'.db'))
 
     #conn = sqlite3.connect(
     n = conn.cursor()
-    courses_in_DB = n.execute('select distinct courseid from post2').fetchall()
-    course_match = "".join([c[0] for c in courses_in_DB if c[0]== course])
+    courses_in_DB = n.execute('select distinct courseid from thread').fetchall()
+    course_match = "".join([c[0] for c in courses_in_DB if c[0] == course])
+    conn.close()
     
     ### Make sure that course mentioned in arguments is valid and a complete courseID
     if course_match != course:
         parser.error('Incomplete or Invalid Course ID')
     
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
-    files = glob.glob('../../../raw/annotated-nus-mooc-corpus/raw/raw_files/1.1/'+ str(course)+'*.csv')
-
+    files = glob.glob('../../../annotated-nus-mooc-corpus/raw_files/1.1/'+ str(course)+'*.csv')
+    
     #print(files)
     if args.file is not None:
-        df = pd.read_csv(args.file)
+        print("Reading from file:"+args.file)
+        file = '../../../annotated-nus-mooc-corpus/raw_files/1.1/'+args.file
+        df = pd.read_csv(file)
 
         if args.task in ("1.1", "marking", "mark", "m"):
             get_kappa_marking(df)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
             get_kappa_categorization(df)
     else:
+        print("Found several files for course: "+course_match)
         for f in files:
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):
