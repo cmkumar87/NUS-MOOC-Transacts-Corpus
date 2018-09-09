@@ -291,12 +291,12 @@ if __name__ == "__main__":
         parser.error('Incomplete or Invalid Course ID')
     
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
-    files = glob.glob('../../../annotated-nus-mooc-corpus/raw_files/1.1/'+ str(course)+'*.csv')
+    files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
     
     #print(files)
     if args.file is not None:
         print("Reading from file:"+args.file)
-        file = '../../../annotated-nus-mooc-corpus/raw_files/1.1/'+args.file
+        file = '../../../annotated-nus-mooc-corpus/raw/1.1/'+args.file
         df = pd.read_csv(file)
 
         if args.task in ("1.1", "marking", "mark", "m"):
