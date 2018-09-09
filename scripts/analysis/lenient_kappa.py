@@ -71,7 +71,7 @@ class fleiss_kappa:
                 return math.sqrt(var[0])
 
 
-def get_kappa_marking(df):
+def get_kappa_marking(df,c):
 
     """ Lenient Fleiss' Kappa for marking task - Task 1.1 """
 
@@ -86,8 +86,6 @@ def get_kappa_marking(df):
         ############################  Get the total number of posts+comments in that thread  ############################
         
         try:    
-            c = conn.cursor()
-
             c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id where \
                 original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like '+'"%%'+ \
                 thread+'%%"')
@@ -154,7 +152,7 @@ def get_kappa_marking(df):
     print("\nAverage Kappa:"+str(np.mean(fks)))
 
 
-def get_kappa_categorization(df):
+def get_kappa_categorization(df,c):
 
     """ Fleiss Kappa for categorisation tasks - Task 2.1 and Task 2.2 """
 
@@ -206,8 +204,6 @@ def get_kappa_categorization(df):
             ############################  Get the total number of posts+comments in that thread  ############################
         
         try: 
-            c = conn.cursor()
-
             c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id where \
                 original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like '+'"%%'+thread+'%%"')
             thread_id = c.fetchone()
@@ -271,7 +267,7 @@ if __name__ == "__main__":
     parser.add_argument("--dbname","-db", type=str)
     args = parser.parse_args()
     course = args.courseid
-    #print(courses_in_DB)
+    
     DB = args.dbname
     if DB is None:
         print("Please enter a valid sqlite database file name")
@@ -280,11 +276,9 @@ if __name__ == "__main__":
     dirname = os.path.dirname(os.path.realpath('__file__'))
     conn = sqlite3.connect(os.path.join(dirname,'../../data/',DB+'.db'))
 
-    #conn = sqlite3.connect(
-    n = conn.cursor()
-    courses_in_DB = n.execute('select distinct courseid from thread').fetchall()
+    db_cursor = conn.cursor()
+    courses_in_DB = db_cursor.execute('select distinct courseid from thread').fetchall()
     course_match = "".join([c[0] for c in courses_in_DB if c[0] == course])
-    conn.close()
     
     ### Make sure that course mentioned in arguments is valid and a complete courseID
     if course_match != course:
@@ -300,16 +294,21 @@ if __name__ == "__main__":
         df = pd.read_csv(file)
 
         if args.task in ("1.1", "marking", "mark", "m"):
-            get_kappa_marking(df)
+            print("Computing kappa for marking task")
+            get_kappa_marking(df, db_cursor)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
-            get_kappa_categorization(df)
+            print("Computing kappa for categorisation task")
+            get_kappa_categorization(df, db_cursor)
     else:
         print("Found several files for course: "+course_match)
         for f in files:
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):
-                get_kappa_marking(df)
+                print("Computing kappa for marking task")
+                get_kappa_marking(df, db_cursor)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
-                get_kappa_categorization(df)
+                print("Computing kappa for categorisation task")
+                get_kappa_categorization(df, db_cursor)
 
+    conn.close()
 ##Done##

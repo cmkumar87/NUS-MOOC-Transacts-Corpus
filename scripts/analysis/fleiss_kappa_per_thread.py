@@ -59,7 +59,7 @@ class fleiss_kappa:
 
 
 
-def get_kappa_marking(data):
+def get_kappa_marking(data, c):
 
     """ Fleiss' Kappa for marking task - Task 1.1 """
 
@@ -70,15 +70,12 @@ def get_kappa_marking(data):
     if 'Answer.noreply' not in data.columns:
         data['Answer.noreply'] = ""
     for title in titles:
-        df = data.loc[data['Input.threadtitle']==title]
+        df = data.loc[data['Input.threadtitle'] == title]
         marked_posts = [col for col in df.columns if 'Answer.' in col]
         df = df.loc[:,marked_posts].fillna(0)
         df = df.replace('unclear',99)
         df = df.replace('none',99)
-        conn = sqlite3.connect(DB)
-        length=0
-        c = conn.cursor()
-        
+        length = 0
 
         ### THREAD NAMES WITH QUOTES DOESN'T WORK IN SQLITE
 
@@ -94,7 +91,6 @@ def get_kappa_marking(data):
 
 
             thread_id = c.fetchone()
-            #print(thread_id)
             
             c.execute('select count(1) from post2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' and \
                 courseid like '+'"%%'+course+'%%"' )
@@ -103,7 +99,7 @@ def get_kappa_marking(data):
             c.execute('select count(1) from comment2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' \
                 and courseid like '+'"%%'+course+'%%"' )
             comment2 = c.fetchone()
-            length = post2[0]+comment2[0]
+            length = post2[0] + comment2[0]
 
         except:
             continue
@@ -116,15 +112,16 @@ def get_kappa_marking(data):
 
         for i in range(length):
             try:
-                df1['Answer.'+ str(i+1)]  = df['Answer.'+ str(i+1)]
+                df1['Answer.'+ str(i+1)] = df['Answer.'+ str(i+1)]
             except:
                 pass
         df1['Answer.noreply'] = df['Answer.noreply']
-
+        #print(df1)
         ## df1 is a dataframe with dimensions (raters X posts). aggregate_raters (below) converts that to  
         ## (posts X categories) with input as counts 
 
         aggregate = aggregate_raters(df1.T)
+        #print(aggregate[0])
 
         fk = fleiss_kappa(aggregate[0])
         fks.append(fk.calc_fleiss_kappa())
@@ -135,7 +132,7 @@ def get_kappa_marking(data):
     print("\nAverage Kappa:"+str(np.mean(fks)))
     print("Std Dev:" + str(np.std(fks)))
 
-def get_kappa_categorization(data):
+def get_kappa_categorization(data, c):
 
     """ Fleiss Kappa for categorisation tasks - Task 2.1 and Task 2.2 """
 
@@ -190,17 +187,15 @@ def get_kappa_categorization(data):
         df = data.loc[data['Input.threadtitle']==title]
         marked_posts = [col for col in df.columns if 'Answer.' in col]
         df = df.loc[:,marked_posts].fillna(0)
-        conn = sqlite3.connect(DB)
         
         
         ############################  Get the total number of posts+comments in that thread  ############################
         try:
-            c = conn.cursor()
             c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id \
                 where original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like \
                 '+'"%%'+title+'%%"')
             thread_id = c.fetchone()
-            #print(thread_id)
+
             c.execute('select count(1) from post2 where thread_id like '+'"%%'+str(thread_id[0])+'%%"'+ ' \
                 and courseid like '+'"%%'+course+'%%"' )
 
@@ -218,20 +213,21 @@ def get_kappa_categorization(data):
         #####################  Calculating Fleiss Kappa using the fleiss_kappa class above  #############################
 
         df1 = pd.DataFrame()
-        #print(length)
+        print(length)
         for i in range(length):
             try:
                 df1['Answer.'+ str(i+1)]  = df['Answer.'+ str(i+1)+'_discourse_type'] 
             except:
                 pass
         df1['Answer.noreply'] = df['Answer.noreply']
-        #print(df1)
+        print(df1)
 
         ## df1 is a dataframe with dimensions (raters X posts). aggregate_raters (below) converts that to (posts X categories) 
         ## with input as counts 
 
         aggregate = aggregate_raters(df1.T) 
-        #print(aggregate)
+        print(aggregate[0])
+        #exit(0)
         fk = fleiss_kappa(aggregate[0])
         fks.append(fk.calc_fleiss_kappa())
         print(title+" -- "+str(fk.calc_fleiss_kappa()))
@@ -260,12 +256,10 @@ if __name__ == "__main__":
 
     dirname = os.path.dirname(os.path.realpath('__file__'))
     conn = sqlite3.connect(os.path.join(dirname,'../../data/',str(DB)+'.db'))
-    #conn = sqlite3.connect(DB)
-    n = conn.cursor()
-    courses_in_DB = n.execute('select distinct courseid from thread').fetchall()
-    #print(os.getcwd())
+    
+    db_cursor = conn.cursor()
+    courses_in_DB = db_cursor.execute('select distinct courseid from thread').fetchall()
     course_match = "".join([c[0] for c in courses_in_DB if c[0]== course])
-    conn.close()
     
     ### Make sure that course mentioned in arguments is valid and a complete courseID
 
@@ -275,18 +269,18 @@ if __name__ == "__main__":
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
 
     files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
-    print(str(len(files)))
+    #print(str(len(files)))
 
     if args.file is not None:
         print("Reading from file:"+args.file)
         file = '../../../annotated-nus-mooc-corpus/raw/1.1/'+args.file
-        df = pd.read_csv(args.file)
+        df = pd.read_csv(file)
 
         if args.task in ("1.1", "marking", "mark", "m"): # Marking Task
             print('Computing kappa for marking')
-            get_kappa_marking(df)
+            get_kappa_marking(df, db_cursor)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"): #Categorisation Task
-            get_kappa_categorization(df)
+            get_kappa_categorization(df, db_cursor)
     else:
         print('Found several files for ' + course)
         for f in files:
@@ -294,7 +288,8 @@ if __name__ == "__main__":
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):    # Marking Task
                 print('Computing kappa for marking')
-                get_kappa_marking(df)
+                get_kappa_marking(df, db_cursor)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):   #Categorisation Task
-                get_kappa_categorization(df)
+                get_kappa_categorization(df, db_cursor)
 
+    conn.close()
