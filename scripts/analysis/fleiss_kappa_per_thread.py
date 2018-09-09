@@ -213,20 +213,22 @@ def get_kappa_categorization(data, c):
         #####################  Calculating Fleiss Kappa using the fleiss_kappa class above  #############################
 
         df1 = pd.DataFrame()
-        print(length)
+        #print(length)
+        #print(df)
+        #exit(0)
         for i in range(length):
             try:
                 df1['Answer.'+ str(i+1)]  = df['Answer.'+ str(i+1)+'_discourse_type'] 
             except:
                 pass
         df1['Answer.noreply'] = df['Answer.noreply']
-        print(df1)
+        #print(df1)
 
         ## df1 is a dataframe with dimensions (raters X posts). aggregate_raters (below) converts that to (posts X categories) 
         ## with input as counts 
 
         aggregate = aggregate_raters(df1.T) 
-        print(aggregate[0])
+        #print(aggregate[0])
         #exit(0)
         fk = fleiss_kappa(aggregate[0])
         fks.append(fk.calc_fleiss_kappa())
@@ -252,7 +254,7 @@ if __name__ == "__main__":
     DB = args.dbname
     if DB == None:
         print("Please enter a db name with option -db")    
-        exit()
+        exit(1)
 
     dirname = os.path.dirname(os.path.realpath('__file__'))
     conn = sqlite3.connect(os.path.join(dirname,'../../data/',str(DB)+'.db'))
@@ -263,12 +265,17 @@ if __name__ == "__main__":
     
     ### Make sure that course mentioned in arguments is valid and a complete courseID
 
-    if course_match!=course:
+    if course_match != course:
         parser.error('Incomplete or Invalid Course ID')
 
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
 
-    files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
+    files = []
+    if args.task == 'm' or args.task == 'marking' or args.task == '1.1':
+        files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
+    elif args.task == 'c' or args.task == 'categorisation' or args.task == '2.1':
+        files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.1/'+ str(course)+'*.csv')
+
     #print(str(len(files)))
 
     if args.file is not None:

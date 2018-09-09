@@ -285,8 +285,13 @@ if __name__ == "__main__":
         parser.error('Incomplete or Invalid Course ID')
     
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
-    files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
-    
+
+    files = []
+    if args.task == 'm' or args.task == 'marking' or args.task == '1.1':
+	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
+    elif args.task == 'c' or args.task == 'categorisation' or args.task == '2.1':
+	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.1/'+ str(course)+'*.csv')
+
     #print(files)
     if args.file is not None:
         print("Reading from file:"+args.file)
