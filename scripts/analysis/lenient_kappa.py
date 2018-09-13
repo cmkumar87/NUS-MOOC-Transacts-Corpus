@@ -71,7 +71,7 @@ class fleiss_kappa:
                 return math.sqrt(var[0])
 
 
-def get_kappa_marking(df,c):
+def get_kappa_marking(df, c, result_file):
 
     """ Lenient Fleiss' Kappa for marking task - Task 1.1 """
 
@@ -144,15 +144,15 @@ def get_kappa_marking(df,c):
         fk = fleiss_kappa(aggregate[0])
         #print(aggregate)
         fks.append(fk.calc_fleiss_kappa())
-        print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa())+"\n")
-
+        #print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa())+"\n")
+        result_file.write(str(fk.calc_fleiss_kappa())+"\n")
 
         #################################################################################################################
 
     print("\nAverage Kappa:"+str(np.mean(fks)))
 
 
-def get_kappa_categorization(df,c):
+def get_kappa_categorization(df, c, result_file):
 
     """ Fleiss Kappa for categorisation tasks - Task 2.1 and Task 2.2 """
 
@@ -249,7 +249,8 @@ def get_kappa_categorization(df,c):
         #print(aggregate[0])
         fk = fleiss_kappa(aggregate[0])
         fks.append(fk.calc_fleiss_kappa())
-        print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa()))
+        result_file.write(str(fk.calc_fleiss_kappa())+"\n")
+        #print(thread+ "("+str(length)+")"+" -- "+str(fk.calc_fleiss_kappa()))
   
     #################################################################################################################
         
@@ -292,6 +293,8 @@ if __name__ == "__main__":
     elif args.task == 'c' or args.task == 'categorisation' or args.task == '2.1':
 	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.1/'+ str(course)+'*.csv')
 
+    result_file = open(course+"_"+args.task+"_lenient_result", "w")
+
     #print(files)
     if args.file is not None:
         print("Reading from file:"+args.file)
@@ -300,20 +303,21 @@ if __name__ == "__main__":
 
         if args.task in ("1.1", "marking", "mark", "m"):
             print("Computing kappa for marking task")
-            get_kappa_marking(df, db_cursor)
+            get_kappa_marking(df, db_cursor, result_file)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
             print("Computing kappa for categorisation task")
-            get_kappa_categorization(df, db_cursor)
+            get_kappa_categorization(df, db_cursor, result_file)
     else:
         print("Found several files for course: "+course_match)
         for f in files:
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):
                 print("Computing kappa for marking task")
-                get_kappa_marking(df, db_cursor)
+                get_kappa_marking(df, db_cursor, result_file)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
                 print("Computing kappa for categorisation task")
-                get_kappa_categorization(df, db_cursor)
+                get_kappa_categorization(df, db_cursor, result_file)
 
     conn.close()
+    result_file.close()
 ##Done##
