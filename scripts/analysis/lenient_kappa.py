@@ -292,6 +292,8 @@ if __name__ == "__main__":
 	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
     elif args.task == 'c' or args.task == 'categorisation' or args.task == '2.1':
 	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.1/'+ str(course)+'*.csv')
+    elif args.task == '2.2':
+	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.2/'+ str(course)+'*.csv')
 
     result_file = open(course+"_"+args.task+"_lenient_result", "w")
 
