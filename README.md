@@ -3,4 +3,4 @@ This is an annotated corpus of discussion forum threads from Massive Open Online
 
 We also propose inter-annotator agreement measures for a piecewise crowdsourcing annotation task to annotation the discussion forum data with our proposed taxonomy of transactive internvetions.
 
-However, due to privacy concerns and copyright claimed by MOOC platforms such as Coursera.org, we have encrypted the data. Please email us in order to enter into a data sharing agreement and access the data. Write to: Min-Yen Kan kanmy@comp.nus.edu.sg  raise a github issue with your contact information.
+However, due to privacy concerns and copyright claimed by MOOC platforms such as Coursera.org, we have encrypted the data. Please email us in order to enter into a data sharing agreement and access the data. Write to: Min-Yen Kan kanmy@comp.nus.edu.sg or raise a github issue with your contact information.
