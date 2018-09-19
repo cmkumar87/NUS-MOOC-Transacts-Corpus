@@ -8,6 +8,7 @@ import os,re,sys
 import glob, argparse
 from statsmodels.stats.inter_rater import aggregate_raters
 import sqlite3
+pd.options.mode.chained_assignment = None
 
 """
 Calculates Strict Fleiss Kappa for given input file and course ID
