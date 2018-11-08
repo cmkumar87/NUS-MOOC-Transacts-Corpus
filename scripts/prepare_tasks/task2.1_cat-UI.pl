@@ -91,7 +91,7 @@ if ($threadtype eq 'noinst'){
 	$commenttable ='comment';
 }
 
-my $datahome = "$path/../data";
+my $datahome = "$path/../../data";
 
 my $dbh = Model::getDBHandle("$datahome",1,undef,'cs6207');
 
@@ -158,8 +158,8 @@ if ($corpus eq 'pilot'){
 }
 elsif ($corpus eq 'nus'){
 	# @courses = ('randomness-001','classicalcomp-001','reasonandpersuasion-001');
-    #	@courses = ('reasonandpersuasion-001');
-     @courses = ('classicalcomp-001');
+	# #@courses = ('reasonandpersuasion-001');
+	@courses = ('classicalcomp-001');
 	
 }
 elsif ($corpus eq 'd14'){
@@ -167,28 +167,27 @@ elsif ($corpus eq 'd14'){
 }
 elsif ($corpus eq 'd61'){
 	# @courses = ('maps-002');
-    # @courses = ('bioinfomethods1-001');
-    @courses= ('neuralnets-2012-001');
-    # @courses=('solarsystem-001');
-    #@courses = ('advancedchemistry-001');
-    #    @courses = ('dynamics1-001');
-    #@courses = ('comparch-002');
-    #@courses = ('smac-001');
-    #@courses = ('medicalneuro-002');
-    #    @courses = ('maththink-004');
-    #@courses = ('casebasedbiostat-002');
-	# @courses = ('organalysis-003');
-	# @courses = ('diabetes-001');
-	# @courses = ('amnhearth-002');
-	# @courses = ('friendsmoneybytes-004');
-	# @courses = ('gamification-003');
-	# @courses = ('globalwarming-002');
-	# @courses = ('howthingswork1-002');
-	# @courses = ('marriageandmovies-001');
-    #@courses = ('warhol-001');
-	# 'modernmiddleeast-001'	
+	# @courses = ('bioinfomethods1-001');
+	#@courses= ('neuralnets-2012-001');
+	@courses=('solarsystem-001');
+	#@courses = ('advancedchemistry-001');
+    	#@courses = ('dynamics1-001');
+	#@courses = ('comparch-002');
+	#@courses = ('smac-001');
+	#@courses = ('medicalneuro-002');
+	#@courses = ('maththink-004');
+	#@courses = ('casebasedbiostat-002');
+	#@courses = ('organalysis-003');
+	#@courses = ('diabetes-001');
+	#@courses = ('amnhearth-002');
+	#@courses = ('friendsmoneybytes-004');
+	#@courses = ('gamification-003');
+	#@courses = ('globalwarming-002');
+	#@courses = ('howthingswork1-002');
+	#@courses = ('marriageandmovies-001');
+	#@courses = ('warhol-001');
+	#@courses = ('modernmiddleeast-001');
 }
-
 
 #this code prepares a csv with 5 columns
 #getthreads
@@ -197,40 +196,40 @@ elsif ($corpus eq 'd61'){
 #print posts
 #print options
 
-#my $csvfile = "input-peer.csv";
 my $csvfile = "input-d14.csv";
-my $outpath = "$path/../data/mturk/csv";
-# open (my $csvfh, ">:encoding(iso-8859-1)", "$outpath/$csvfile");
+my $outpath = "$path/../mturk_input_files";
+#open (my $csvfh, ">:encoding(iso-8859-1)", "$outpath/$csvfile");
 open (my $csvfh, ">:encoding(UTF-8)", "$outpath/$csvfile") 
 	or die "Cannot open file $csvfile at $outpath/$csvfile";
 
 #print file headers
-my $headers = { 1 => 'threadtype,'	,
-				2 => 'threadtitle,'	,
-				3 => 'posts,' 		,
-				4 => 'inst_post'
-			  };
+my $headers = { 	1 => 'threadtype,',
+			2 => 'threadtitle,',
+			3 => 'posts,',
+			4 => 'inst_post'
+		};
 printHeaders($csvfh, $headers);
 
-my $forumidsquery	= "select id,courseid,forumname from forum ";
- $forumidsquery		= Model::appendListtoQuery($forumidsquery,\@courses, 'courseid ','where ');
-  $forumidsquery	.= "and forumname in('Lecture','Homework','Exam','General','Project','Discussion','PeerA')";
- #$forumidsquery	.= "and forumname in('Homework')";
- # $forumidsquery	.= "and forumname in('Lecture')";
- # $forumidsquery		.= "and forumname in('Exam')";
- # $forumidsquery		.= "and forumname in('Project','Discussion','PeerA')";
- # $forumidsquery	.= "and forumname in('General')";
- # $forumidsquery	.= "and forumname in('Project','Discussion')";
- # $forumidsquery	.= "and forumname in('Project','Discussion','PeerA')";
+my $forumidsquery = "select id,courseid,forumname from forum ";
+$forumidsquery = Model::appendListtoQuery($forumidsquery,\@courses, 'courseid ','where ');
+$forumidsquery .= "and forumname in('Lecture','Homework','Exam',
+					'General',
+					'Project','Discussion','PeerA')";
+#$forumidsquery	.= "and forumname in('Homework')";
+# $forumidsquery	.= "and forumname in('Lecture')";
+# $forumidsquery	.= "and forumname in('Exam')";
+# $forumidsquery	.= "and forumname in('Project','Discussion','PeerA')";
+# $forumidsquery	.= "and forumname in('General')";
+# $forumidsquery	.= "and forumname in('Project','Discussion')";
+# $forumidsquery	.= "and forumname in('Project','Discussion','PeerA')";
 
-my $forumrows		= $dbh->selectall_arrayref($forumidsquery) or die "Courses query failed! ";
+my $forumrows = $dbh->selectall_arrayref($forumidsquery) or die "Courses query failed! ";
 								
 foreach my $forumrow ( @$forumrows ){
-	my $forumid		= @$forumrow[0];
-	my $coursecode	= @$forumrow[1];
-	$forumtype		= @$forumrow[2];
-	
-	my $inst_replied	= (($threadtype eq 'inst') || ($threadtype eq 'nota') )?1 :0 ;
+	my $forumid = @$forumrow[0];
+	my $coursecode = @$forumrow[1];
+	$forumtype = @$forumrow[2];
+	my $inst_replied = (($threadtype eq 'inst') || ($threadtype eq 'nota') )?1 :0 ;
 	my $number_of_threads	= @{$dbh->selectcol_arrayref($countofthreads,undef,$forumid,$coursecode,$inst_replied)}[0];
 	
 	if( $number_of_threads == 0){ 
@@ -238,7 +237,7 @@ foreach my $forumrow ( @$forumrows ){
 		next;
 	}
 	
-	my @threads		= undef;
+	my @threads	= undef;
 	
 	if ($threadtype eq 'inst'){
 		print "\n Picking threads where an instructor or ta has replied\n";
@@ -255,12 +254,12 @@ foreach my $forumrow ( @$forumrows ){
 	
 	print "\n Starting to loop over all the threads for $coursecode \t $forumid \n";
 
-    # our %selected=('Do lecture quizzes need to be 100% correct for course completion?',[1],'When are weekly lectures and assets release?',[1],'Open interval notation: ]ab[ ?',[1,2],'defining limits',[1],'“All foreign cars are badly made” What is the negation of this sentence?',[1,3],'Question about sets and elements - need help.',[1,2,3],'Lecture 10B minute 11',[1]);
- open FILE1, "output.txt" or die;
+# our %selected=('Do lecture quizzes need to be 100% correct for course completion?',[1],'When are weekly lectures and assets release?',[1],'Open interval notation: ]ab[ ?',[1,2],'defining limits',[1],'“All foreign cars are badly made” What is the negation of this sentence?',[1,3],'Question about sets and elements - need help.',[1,2,3],'Lecture 10B minute 11',[1]);
+open FILE1,"output.txt" or die "$!";
 my %selected;
 while (my $line=<FILE1>) {
-    # $line =~ s/^"//;
-    # $line =~ s/"$//g;
+   # $line =~ s/^"//;
+   # $line =~ s/"$//g;
    #chomp($line);
    local $/;
    # map {
@@ -273,20 +272,19 @@ while (my $line=<FILE1>) {
 
 use Data::Dumper;
 print Dumper \%selected;
-
-
-    foreach my $thread (@threads){
-		
-    print ref(%selected);
-    # close($fh);
+foreach my $thread (@threads){
+	print ref(%selected);
+    	#close($fh);
 	our @titles = keys %selected;
-		my $threadid 	= $thread->[0];
-		if (!defined $inst_replied){
-			$inst_replied = $thread->[3];
-		}
-		my $threadtitle = $thread->[4];
-		my $forumid		= $thread->[6];
-		if($threadtitle ~~ @titles){
+	my $threadid 	= $thread->[0];
+	if (!defined $inst_replied){
+		$inst_replied = $thread->[3];
+	}
+	my $threadtitle = $thread->[4];
+	my $forumid		= $thread->[6];
+	if($threadtitle ~~ @titles){
+                #print("thread match herere");
+                #<STDIN>;
 		#round 1 reason threads 
 		# if($threadid ne 461 && $threadid ne 299 && $threadid ne 129 && $threadid ne 296 && $threadid ne 281 
 			# && $threadid ne 273 && $threadid ne 119){  
@@ -315,7 +313,7 @@ print Dumper \%selected;
 		my $usercounter	= 1;
 		my %userAnonMap = ();
 		
-		my $forumname	= 	Model::getForumname($dbh,$forumid,$coursecode);
+		my $forumname = Model::getForumname($dbh,$forumid,$coursecode);
 		$poststh->execute($threadid,$coursecode,$forumid) or die $DBI::errstr;
 		my $posts = $poststh->fetchall_hashref('post_order');
 		
@@ -344,11 +342,12 @@ print Dumper \%selected;
 		$threadtitle =~ s/\"/\'/g;
 		printtoCSV($csvfh, $threadtitle);
 		print $csvfh "\",";
-		
 		print $csvfh "\"";
 		
 		my $post_order = 0;
 		foreach my $order ( sort {$a <=> $b } keys %$posts ){
+                        #print "post printing loop";
+                        #<STDIN>;
 			my %post = ();
 			
 			$post_order ++;
@@ -359,7 +358,6 @@ print Dumper \%selected;
 			$post{'post_text'}		= $posts->{$order}{'post_text'};			
 			$post{'votes'}			= $posts->{$order}{'votes'};
 			$post{'order'}			= $post_order;
-			
 		
 			#sanity check
 			if(!defined $posts->{$order}{'post_text'}){
@@ -392,7 +390,7 @@ print Dumper \%selected;
 			}
 			my @posts_replied_to = $selected{$threadtitle};
 			if($post_order ~~ @posts_replied_to){
-			printPost($csvfh, \%post);
+				printPost($csvfh, \%post);
 			}
 			
 			foreach my $id ( sort {$a <=> $b } keys %$comments ){
@@ -419,9 +417,8 @@ print Dumper \%selected;
 				$comment{'user'}			= $userAnonMap{$comments->{$id}{'user'}};
 				#my @posts_replied_to = $selected{$threadtitle};
 				if($post_order ~~ @posts_replied_to){
-
-				
-				printComment($csvfh, \%comment);}
+					printComment($csvfh, \%comment);
+				}
 				
 			}##comment loop ends
 
@@ -430,11 +427,11 @@ print Dumper \%selected;
 		print $csvfh "\,";
 		
 		$instpoststh->execute($threadid,$coursecode,$forumid) 
-											or die $DBI::errstr;
+						or die $DBI::errstr;
 		my $instposts = $instpoststh->fetchall_hashref('postid');
 		
 		$instcmntsth->execute($threadid,$coursecode,$forumid)
-											or die $DBI::errstr; 	
+						or die $DBI::errstr; 	
 		my $instcmnts = $instcmntsth->fetchall_hashref('postid');
 		
 		if (!defined $instposts && !defined $instcmnts){
@@ -608,13 +605,14 @@ sub printPost{
 		exit(0);
 	}
 	
-	my $text_to_print	= "<div class=\'course-forum-post-container\'>
+	my $text_to_print = "<div class=\'course-forum-post-container\'>
 							<div class=\'course-forum-post-top-container\'>	
 							<div class=\'course-forum-post-view-container\'>	
 						  ";
 			
 	if($post_order ne "instructor_post"){
 		if (!defined $post_text){ die "post_text not defined. exiting.."; }
+
 		$text_to_print .= "<table width=\'100\%\' style=\'border: 2px solid grey;\' cellpadding=10>
 							<tr><td><label><div class=\'course-forum-post-header\'>
 							<h5 class=\'course-forum-post-byline\'>
@@ -637,7 +635,7 @@ sub printPost{
 							<div class=\'couponcode\'>Second Link
    							<span class=\'coupontooltip\'> Content 2</span>
 							</div>-->				
-							
+					
 
 
 							<tr><td colspan = \'2\'>\&nbsp\;</td></tr>

@@ -92,7 +92,7 @@ if ($threadtype eq 'noinst'){
 	$commenttable ='comment';
 }
 
-my $datahome = "$path/../data";
+my $datahome = "$path/../../data";
 
 my $dbh = Model::getDBHandle("$datahome",1,undef,'cs6207');
 
@@ -172,12 +172,12 @@ elsif ($corpus eq 'd61'){
 	# @courses = ('diabetes-001');
 	# @courses = ('amnhearth-002');
 	# @courses = ('friendsmoneybytes-004');
-	# @courses = ('gamification-003');
+	@courses = ('gamification-003');
 	# @courses = ('globalwarming-002');
 	# @courses = ('howthingswork1-002');
     #  @courses = ('marriageandmovies-001');
     #	@courses = ('warhol-001');
-    @courses = ('smac-001');
+    #@courses = ('smac-001');
     #@courses = ('analyze-001');
     #@courses = ('optimization-002');
     # @courses = ('bioinfomethods1-001');
@@ -195,7 +195,7 @@ elsif ($corpus eq 'd61'){
 
 #my $csvfile = "input-peer.csv";
 my $csvfile = "input-d14.csv";
-my $outpath = "$path/../data/mturk/csv";
+my $outpath = "$path/../mturk_input_files";
 # open (my $csvfh, ">:encoding(iso-8859-1)", "$outpath/$csvfile");
 open (my $csvfh, ">:encoding(UTF-8)", "$outpath/$csvfile") 
 	or die "Cannot open file $csvfile at $outpath/$csvfile";
@@ -210,9 +210,9 @@ printHeaders($csvfh, $headers);
 
 my $forumidsquery	= "select id,courseid,forumname from forum ";
  $forumidsquery		= Model::appendListtoQuery($forumidsquery,\@courses, 'courseid ','where ');
- #$forumidsquery	.= "and forumname in('Homework','Exam','General','Project','Discussion','PeerA')";
+ $forumidsquery	.= "and forumname in('Homework','Lecture','Exam','General','Project','Discussion','PeerA')";
  #$forumidsquery	.= "and forumname in('Homework')";
- $forumidsquery	.= "and forumname in('Lecture')";
+ #$forumidsquery	.= "and forumname in('Lecture')";
  # $forumidsquery		.= "and forumname in('Exam')";
  # $forumidsquery		.= "and forumname in('Project','Discussion','PeerA')";
  # $forumidsquery	.= "and forumname in('General')";
@@ -255,7 +255,7 @@ foreach my $forumrow ( @$forumrows ){
 
         #our %selected = ('The jet of 3C273'=>{1=>'elaborates'},'Quasar questions'=>{1=>'resolves'},'Dark matter'=>{1=>'resolves'},'does the hubble constant allow parts of the universe to never be observed'=>{1=>''});
 	#our %annotated = ('GHGs in lower atmosphere - are they harmless?',['resolves','none']);
-	 open FILE1, "out2.txt" or die;
+  open FILE1, "out2.txt" or die;
   my %selected;
   my @post1;
   while (my $line=<FILE1>) {
@@ -264,16 +264,16 @@ foreach my $forumrow ( @$forumrows ){
      #chomp($line);
      #local $/;
      # map {
-     my ($word1,$posts) = split(/\t/, $line,2);
-     #print "$posts";
-        my @post1 = split(/\t/, $posts,2);
+     my ($title,$post) = split(/\:/, $line);
+     print "$post";
+        #my @post1 = split(/\t/, $posts,2);
         # print "@post1[0]\n";
-         foreach  my $p(@post1){
-        my ($p_num,$p_cat) = split(/,/, $p,2); 
-        #print "$p_cat";
-        ( $p_cat = $p_cat) =~ s/\s//g;
-        $selected{$word1}{$p_num + 0} = $p_cat;
-           }
+        #foreach  my $p(@post1){
+        	my ($p_num,$p_cat) = split(/,/, $post); 
+		#print "$p_cat";
+        	($p_cat = $p_cat) =~ s/\s//g;
+	        $selected{$title}{$p_num + 0} = $p_cat;
+        #}
     };
 use Data::Dumper;
 print Dumper \%selected;
@@ -287,31 +287,11 @@ foreach my $thread(@threads){
 		}
 		my $threadtitle = $thread->[4];
 		my $forumid		= $thread->[6];
-		if($threadtitle ~~ @titles){
-		#round 1 reason threads 
-		# if($threadid ne 461 && $threadid ne 299 && $threadid ne 129 && $threadid ne 296 && $threadid ne 281 
-			# && $threadid ne 273 && $threadid ne 119){  
-			# next;
-		# }
-		
-		# round 1 classic threads 
-	 	# if($threadid ne 52 && $threadid ne 30 && $threadid ne 166 && $threadid ne 258 && $threadid ne 244 && 
-			# $threadid ne 100){  
-			# next;
-		# }
+        #print($threadtitle . "\n");
+        #next;
 
-		# skip round 1 threads
-		#classic
-	 	# if($threadid eq 52 || $threadid eq 30 || $threadid eq 166 || $threadid eq 258 || $threadid eq 244 || 
-			# $threadid eq 100){  
-			# next;
-		# }
-		
-		#reason
-		# if( $threadid eq 461 || $threadid eq 299 || $threadid eq 129 || $threadid eq 296 || $threadid eq 281 
-			# || $threadid eq 273 || $threadid eq 119 ){
-			# next;
-		# }
+	if($threadtitle ~~ @titles){
+	#if (grep{$_ =~ $threadtitle} @titles){
 
 		my $usercounter	= 1;
 		my %userAnonMap = ();
