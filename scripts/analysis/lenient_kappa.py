@@ -71,7 +71,7 @@ class fleiss_kappa:
                 return math.sqrt(var[0])
 
 
-def get_kappa_marking(df, c, result_file):
+def get_kappa_marking(df, c, result_file, results):
 
     """ Lenient Fleiss' Kappa for marking task - Task 1.1 """
 
@@ -150,9 +150,11 @@ def get_kappa_marking(df, c, result_file):
         #################################################################################################################
 
     print("\nAverage Kappa:"+str(np.mean(fks)))
+    results = np.append(results,np.mean(fks))
+    return results
 
 
-def get_kappa_categorization(df, c, result_file):
+def get_kappa_categorization(df, c, result_file, results):
 
     """ Fleiss Kappa for categorisation tasks - Task 2.1 and Task 2.2 """
 
@@ -255,11 +257,10 @@ def get_kappa_categorization(df, c, result_file):
     #################################################################################################################
         
     print("\nAverage Kappa:"+str(np.mean(fks))+"\n")
-
+    results = np.append(results,np.mean(fks))
+    return results
 
 if __name__ == "__main__":
-
-   
     fks = []
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", "-f", type=str )
@@ -289,12 +290,13 @@ if __name__ == "__main__":
 
     files = []
     if args.task == 'm' or args.task == 'marking' or args.task == '1.1':
-	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
+        files = glob.glob('../../../annotated-nus-mooc-corpus/raw/1.1/'+ str(course)+'*.csv')
     elif args.task == 'c' or args.task == 'categorisation' or args.task == '2.1':
-	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.1/'+ str(course)+'*.csv')
+        files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.1/'+ str(course)+'*.csv')
     elif args.task == '2.2':
-	files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.2/'+ str(course)+'*.csv')
+        files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.2/'+ str(course)+'*.csv')
 
+    results = []
     result_file = open(course+"_"+args.task+"_lenient_result", "w")
 
     #print(files)
@@ -305,21 +307,21 @@ if __name__ == "__main__":
 
         if args.task in ("1.1", "marking", "mark", "m"):
             print("Computing kappa for marking task")
-            get_kappa_marking(df, db_cursor, result_file)
+            results = get_kappa_marking(df, db_cursor, result_file, results)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
             print("Computing kappa for categorisation task")
-            get_kappa_categorization(df, db_cursor, result_file)
+            results = get_kappa_categorization(df, db_cursor, result_file, results)
     else:
         print("Found several files for course: "+course_match)
         for f in files:
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):
                 print("Computing kappa for marking task")
-                get_kappa_marking(df, db_cursor, result_file)
+                results = get_kappa_marking(df, db_cursor, result_file, results)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):
                 print("Computing kappa for categorisation task")
-                get_kappa_categorization(df, db_cursor, result_file)
-
+                results = get_kappa_categorization(df, db_cursor, result_file, results)
+    print('Kappa averaged over all files', str(np.mean(results)))
     conn.close()
     result_file.close()
 ##Done##

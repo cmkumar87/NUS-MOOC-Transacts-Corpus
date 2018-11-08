@@ -59,8 +59,7 @@ class fleiss_kappa:
         return math.sqrt(var[0])
 
 
-
-def get_kappa_marking(data, c, result_file):
+def get_kappa_marking(data, c, result_file, results):
 
     """ Fleiss' Kappa for marking task - Task 1.1 """
 
@@ -89,7 +88,6 @@ def get_kappa_marking(data, c, result_file):
             c.execute('select thread_id from post2 inner join thread on post2.thread_id= thread.id \
                 where original=1 and post2.courseid like '+'"%%'+course+'%%"'+' and thread.title like \
                 '+'"%%'+title+'%%"')
-
 
             thread_id = c.fetchone()
             
@@ -131,11 +129,12 @@ def get_kappa_marking(data, c, result_file):
         result_file.write(str(fk.calc_fleiss_kappa())+"\n")
 
     #################################################################################################################         
-
-    print("\nAverage Kappa:" + str(np.mean(fks)))
+    results = np.append(results,np.mean(fks))
+    #print("\nAverage Kappa:" + str(np.mean(fks)))
     print("Std Dev:" + str(np.std(fks)))
+    return results
 
-def get_kappa_categorization(data, c, result_file):
+def get_kappa_categorization(data, c, result_file, results):
 
     """ Fleiss Kappa for categorisation tasks - Task 2.1 and Task 2.2 """
 
@@ -240,7 +239,9 @@ def get_kappa_categorization(data, c, result_file):
 
         #################################################################################################################      
 
-    print("\nAverage Kappa:"+str(np.mean(fks)))
+    #print("\nAverage Kappa:"+str(np.mean(fks)))
+    results = np.append(results, np.mean(fks))
+    return results
     #print("Std Dev:" + str(np.std(fks)))
 
 
@@ -270,7 +271,7 @@ if __name__ == "__main__":
     ### Make sure that course mentioned in arguments is valid and a complete courseID
 
     if course_match != course:
-        parser.error('Incomplete or Invalid Course ID')
+        parser.error('Incomplete or Invalid Course ID: Cannot match '+course_match+' to '+course)
 
     ## Do not give --file arg if you want it to run on all batches of a course, set folder in next line
 
@@ -283,6 +284,7 @@ if __name__ == "__main__":
         files = glob.glob('../../../annotated-nus-mooc-corpus/raw/2.2/'+ str(course)+'*.csv')
 
     result_file = open(course+"_"+args.task+"_strict_result","w")
+    results = np.array([])
     
     #print(str(len(files)))
     if args.file is not None:
@@ -290,11 +292,13 @@ if __name__ == "__main__":
         file = '../../../annotated-nus-mooc-corpus/raw/1.1/'+args.file
         df = pd.read_csv(file)
 
-        if args.task in ("1.1", "marking", "mark", "m", ): # Marking Task
+        if args.task in ("1.1", "marking", "mark", "m" ): # Marking Task
             print('Computing kappa for marking')
-            get_kappa_marking(df, db_cursor, result_file)
+            results = get_kappa_marking(df, db_cursor, result_file, results)
         elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"): #Categorisation Task
-            get_kappa_categorization(df, db_cursor, result_file)
+            results = get_kappa_categorization(df, db_cursor, result_file, results)
+
+        print("Average over files "+str(np.mean(results)))
     else:
         print('Found several files for ' + course)
         for f in files:
@@ -302,8 +306,10 @@ if __name__ == "__main__":
             df = pd.read_csv(f)
             if args.task in ("1.1", "marking", "mark", "m"):    # Marking Task
                 print('Computing kappa for marking')
-                get_kappa_marking(df, db_cursor, result_file)
+                results = get_kappa_marking(df, db_cursor, result_file, results)
             elif args.task in ("2.1", "2.2", "categorization", "categorisation", "cat", "c"):   #Categorisation Task
-                get_kappa_categorization(df, db_cursor, result_file)
+                results = get_kappa_categorization(df, db_cursor, result_file, results)
+
+        print("Average over files "+str(np.mean(results)))
 
     conn.close()
