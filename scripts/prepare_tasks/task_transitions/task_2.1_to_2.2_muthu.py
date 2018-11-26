@@ -14,7 +14,7 @@ args = parser.parse_args()
 # Import Task 2.1 file
 df = pd.read_csv(args.file)
 df = df.loc[df['AssignmentStatus'] != 'Rejected'] # Take only the raters who are approved
-threads = df['Input.threadtitle'].unique()	# List of unique threads 
+threads = df['Input.threadtitle'].unique()	# List of unique threads
 entries = []
 forward = ['resolves','elaborates'] # Only forward these two categories
 for thread in threads:
@@ -24,7 +24,8 @@ for thread in threads:
     #print(maxes[0])
 
     # Print thread name with marked post and category to forward
-    
+    posts_in_order = [(re.findall(r'[0-9]+', f)) for f in filter_col]
     print(thread, end = ': ')
-    [print(str(i+1)+','+str(word), end=' ') for i,word in enumerate(maxes[0]) if word in forward]
+    [print(str(posts_in_order[i][0])+','+str(word), end=' ') for i,word in enumerate(maxes[0]) if word in forward]
     print('\n')
+
