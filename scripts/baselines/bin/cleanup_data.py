@@ -13,7 +13,8 @@ thread_titles = courses_df['Title']
 courses = courses_df['Course']
 del courses_df['post']
 del courses_df['inst_post']
-conn = sqlite3.connect('../../../nus-part-two/Annotation files/annot-site/project/data/nusdata.db')
+#conn = sqlite3.connect('../../../nus-part-two/Annotation files/annot-site/project/data/nusdata.db')
+conn = sqlite3.connect('/diskA/muthu/nus-mooc-corpus/data/cs6207.db')
 conn.text_factory = lambda x: str(x, 'latin1')
 c = conn.cursor()
 
@@ -60,7 +61,6 @@ for thread_title in thread_titles:
 
 # REGEX
 '''
-
 
 courses_df.to_csv('../data/nustotal_preprocessed.csv')
 

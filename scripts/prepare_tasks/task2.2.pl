@@ -172,7 +172,7 @@ elsif ($corpus eq 'd61'){
 	# @courses = ('diabetes-001');
 	# @courses = ('amnhearth-002');
 	# @courses = ('friendsmoneybytes-004');
-	@courses = ('gamification-003');
+	#@courses = ('gamification-003');
 	# @courses = ('globalwarming-002');
 	# @courses = ('howthingswork1-002');
     #  @courses = ('marriageandmovies-001');
@@ -182,7 +182,15 @@ elsif ($corpus eq 'd61'){
     #@courses = ('optimization-002');
     # @courses = ('bioinfomethods1-001');
     #       @courses = ('neuralnets-2012-001');
-	# 'modernmiddleeast-001'	
+	# 'modernmiddleeast-001A
+#	@courses = ('medicalneuro-002')
+	#@courses = ('maththink-004')	
+#	@courses = ('maps-002')
+	#@courses = ('solarsystem-001')
+	#@courses = ('smac-001')
+        #@courses = ('rprog-003')
+        @courses = ('dynamics1-001')
+
 }
 
 
@@ -194,7 +202,7 @@ elsif ($corpus eq 'd61'){
 #print options
 
 #my $csvfile = "input-peer.csv";
-my $csvfile = "input-d14.csv";
+my $csvfile = $courses[0] . "-2.2.csv";
 my $outpath = "$path/../mturk_input_files";
 # open (my $csvfh, ">:encoding(iso-8859-1)", "$outpath/$csvfile");
 open (my $csvfh, ">:encoding(UTF-8)", "$outpath/$csvfile") 
@@ -348,6 +356,7 @@ foreach my $thread(@threads){
 				foreach my $label (keys %{$posts->{$order}}){
 					print " $label \t";
 				}
+                                print "\n sanity check failed"; 
 				exit(0);
 			}
 			else{

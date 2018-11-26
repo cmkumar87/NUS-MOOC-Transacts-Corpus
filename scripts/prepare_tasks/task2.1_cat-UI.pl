@@ -169,12 +169,12 @@ elsif ($corpus eq 'd61'){
 	# @courses = ('maps-002');
 	# @courses = ('bioinfomethods1-001');
 	#@courses= ('neuralnets-2012-001');
-	@courses=('solarsystem-001');
+	#@courses=('solarsystem-001');
 	#@courses = ('advancedchemistry-001');
     	#@courses = ('dynamics1-001');
 	#@courses = ('comparch-002');
 	#@courses = ('smac-001');
-	#@courses = ('medicalneuro-002');
+	@courses = ('medicalneuro-002');
 	#@courses = ('maththink-004');
 	#@courses = ('casebasedbiostat-002');
 	#@courses = ('organalysis-003');
@@ -186,6 +186,7 @@ elsif ($corpus eq 'd61'){
 	#@courses = ('howthingswork1-002');
 	#@courses = ('marriageandmovies-001');
 	#@courses = ('warhol-001');
+	#@courses = ('compilers-004');
 	#@courses = ('modernmiddleeast-001');
 }
 
@@ -196,7 +197,7 @@ elsif ($corpus eq 'd61'){
 #print posts
 #print options
 
-my $csvfile = "input-d14.csv";
+my $csvfile = $courses[0] . "_2.1.csv";
 my $outpath = "$path/../mturk_input_files";
 #open (my $csvfh, ">:encoding(iso-8859-1)", "$outpath/$csvfile");
 open (my $csvfh, ">:encoding(UTF-8)", "$outpath/$csvfile") 

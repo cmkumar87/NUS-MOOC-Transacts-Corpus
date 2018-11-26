@@ -22,25 +22,32 @@ for thread in threads:
     filter_col = [col for col in df if col.startswith('Answer')] # Get only columns that have "Answer" in col name
     counts = (df.loc[df['Input.threadtitle']==thread, \
             filter_col].count(axis=0))
-    print (counts)
+    #print (thread)
+    #print (counts)
 
     if counts['Answer.noreply'] == 7:
         continue
 
-    #del counts['Answer.noreply']
-    print(counts)
+    del counts['Answer.noreply']
+    #print(counts)
     #exit(0)
     counts_sorted = (counts.sort_values(ascending=False))
+    #print(counts_sorted)
+    #print(counts_sorted.iloc[1])
+    #print(counts_sorted.iloc[2])
+    #exit()
 
     if counts_sorted.iloc[1] >= counts.iloc[0]-2:
         #print(counts_sorted.iloc[:2])
         m = ','.join( [(re.findall(r"[0-9]",i)[0]) for i in  counts_sorted.iloc[:2].index.values])
         m = np.array(m)
-
         entry = (''+ str(thread.translate(str.maketrans({"'": r"\'"}))) +'' \
                 + ': ' \
                 + str( m.ravel()[0]) + \
                             '')
+        #entries.append(entry)
+
+       #print (entry)
     else:
         #print(counts_sorted.iloc[:1])
         m = re.findall(r"[0-9]", \
