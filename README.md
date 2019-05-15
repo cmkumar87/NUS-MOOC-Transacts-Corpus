@@ -7,4 +7,4 @@ However, due to privacy concerns and copyright claimed by MOOC platforms such as
 
 All rights reserved.
 
-For access and please raise a github issue or write to cmkumar087@gmail.com kanmy@comp.nus.edu.sg. We will review your request and get back to you.
+For access and use please raise a github issue or write to cmkumar087@gmail.com kanmy@comp.nus.edu.sg. We will review your request and get back to you.
