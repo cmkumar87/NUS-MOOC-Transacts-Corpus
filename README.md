@@ -14,4 +14,4 @@ ACKNOWLEDGEMENTS
 
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
 
-We anknowledge the conttibutions of Ms. Kiruthika Ragupathi, Centre for Development of Teaching and Leanring (CDTL) at NUS and Prof. Bernard Tan, Professor of Information Systems at NUS School of Computing.
+We acknowledge the conttibutions of Ms. Kiruthika Ragupathi, Centre for Development of Teaching and Leanring (CDTL) at NUS and Prof. Bernard Tan, Professor of Information Systems at NUS School of Computing.
