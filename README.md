@@ -1,5 +1,5 @@
 # NUS MOOC Transacts CORPUS
-This is an annotated corpus of discussion forum threads from Massive Open Online Courses (MOOCs). The annotations are grounded on a pedagogy based discourse framework that adapts from and codifies 'transactivity' (Berkowitz and Gibbs, 1983). This is simplified adadpation of their pedagogical/psychology based coding scheme, for instructor interventions.
+This is an annotated corpus of discussion forum threads from Massive Open Online Courses (MOOCs). The annotations are grounded on a pedagogy based discourse framework that adapts from and codifies 'transactivity' as proposed by Berkowitz and Gibbs, 1983. This is a simplified adadpation of their pedagogical/psychology based coding scheme, for instructor posts and replies in MOOC discussion forums.
 
 We also propose inter-annotator agreement measures for a piecewise crowdsourcing annotation task to annotate the forum discussions with our modified taxonomy of transactive interventions.
 
