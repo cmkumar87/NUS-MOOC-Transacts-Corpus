@@ -7,7 +7,7 @@ However, due to privacy concerns and copyright claimed by MOOC platforms such as
 
 All rights reserved.
 
-For access and use please raise a github issue or write to cmkumar087@gmail.com. I hold personal liability for the data to NUS and Coursera. So I will review your request and get back to you.
+For access and use please see the README on the fork: https://github.com/WING-NUS/NUS-MOOC-Transacts-Corpus and proceed as instructed.
 
 ACKNOWLEDGEMENTS
 ----------------
