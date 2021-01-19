@@ -7,10 +7,9 @@ However, due to privacy concerns and copyright claimed by MOOC platforms such as
 
 All rights reserved.
 
-For access and use please raise a github issue or write to cmkumar087@gmail.com. I hold personal liability for the data to NUS and Coursera. So I will review your request and get back to you.
+For access and use, please fill out the academic research purpose license form at http://bit.ly/wing-nus-mooc-transacts-corpus-request-form. 
+We hold personal liability for the data to NUS and Coursera. We will review your request and get back to you within five (5) business days.
 
 ACKNOWLEDGEMENTS
 ----------------
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
-
-I acknowledge the contributions of Ms. Kiruthika Ragupathi, Centre for Development of Teaching and Leanring (CDTL) at NUS and Prof. Bernard Tan, Professor of Information Systems at NUS School of Computing.
