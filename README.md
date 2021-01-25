@@ -9,6 +9,19 @@ All rights reserved.
 
 For access and use please see the README on the fork: https://github.com/WING-NUS/NUS-MOOC-Transacts-Corpus and proceed as instructed.
 
+Citation: 
+
+If you use the corpus for your research please cite:
+
+```
+@phdthesis{Chandrasekaranthesis2019,
+    author = {MUTHU KUMAR CHANDRASEKARAN},
+    school   = {National University of Singapore},
+    title = {A DISCOURSE CENTRIC FRAMEWORK FOR FACILITATING INSTRUCTOR INTERVENTION IN MOOC DISCUSSION FORUMS},
+    year = {2019},
+}
+```
+
 ACKNOWLEDGEMENTS
 ----------------
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
