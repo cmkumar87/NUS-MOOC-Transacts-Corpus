@@ -10,7 +10,7 @@ All rights reserved.
 For access and use, please fill out the academic research purpose license form at http://bit.ly/wing-nus-mooc-transacts-corpus-request-form. 
 We hold personal liability for the data to NUS and Coursera. We will review your request and get back to you within five (5) business days.
 
-Citation: 
+##Citation: 
 
 If you use the corpus for your research please cite:
 
@@ -24,6 +24,6 @@ If you use the corpus for your research please cite:
 ```
 
 
-ACKNOWLEDGEMENTS
+##ACKNOWLEDGEMENTS
 ----------------
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
