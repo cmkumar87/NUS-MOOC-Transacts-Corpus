@@ -14,12 +14,14 @@ Citation:
 
 If you use the corpus for your research please cite:
 
-```@phdthesis{Chandrasekaranthesis2019,
+```
+@phdthesis{Chandrasekaranthesis2019,
 	author = { MUTHU KUMAR CHANDRASEKARAN},
   school   = {National University of Singapore},
 	title = {A DISCOURSE CENTRIC FRAMEWORK FOR FACILITATING INSTRUCTOR INTERVENTION IN MOOC DISCUSSION FORUMS},
 	year = {2019},
-}```
+}
+'''
 
 
 ACKNOWLEDGEMENTS
