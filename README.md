@@ -23,10 +23,6 @@ If you use the corpus for your research please cite:
 }
 ```
 
-# Data File Format
-------------------
-
-
 
 ACKNOWLEDGEMENTS
 ----------------
