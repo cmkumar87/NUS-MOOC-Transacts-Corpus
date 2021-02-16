@@ -24,48 +24,89 @@ If you use the corpus for your research please cite:
 ```
 
 # Data
--------
 Repository contains serially annotated data for 3 natural language processing tasks on MOOC discussion threads. 
 Task 1: 
 
 ## Annotation Categories
-----------------------
-Level 1 Category | Level 2 Category        | Transactive?
-(Top level)      | (Low level)             |
----------------------------------------------------------
-Requests         | Feedback Request        | Yes
-                 | Justification Request   | Yes
-Elaborates       | Extension               | Yes
-                 | Juxtaposition           | Yes
-                 | Clarification           | Yes
-                 | Refinement              | Yes
-                 | Reasoning               | Yes
-                 | Critique                | Yes
-Resolves         | Completion              | Yes
-                 | Paraphrase              | Yes
-                 | Integration & Summing up| Yes
-                 | Agreement               | Yes
-                 | Disagreement            | Yes
-                 | Generic Answer          | Yes
-                 | Appreciation            | Yes
-Social           | Other logistics         | No
-                 | Social                  | No
----------------------------------------------------------
 
-# File Format
-------------------
+<table>
+    <tr>
+        <th>Level 1 Category</th>
+        <th>Level 2 Category</th>
+        <th>Transactive?</th>
+    </tr>
+    <tr>
+        <td> (Top level) </td>
+        <td> (Low level) </td>
+        <td> </td>
+    </tr>
+    <tr>
+        <td>Requests</td>
+        <td>Feedback Request</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Justification Request</td>
+        <td>Yes</td>
+    </tr>
+    <hr/>
+    <tr>
+        <td>Elaborates</td>
+        <td>Extension</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Juxtaposition</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Clarification</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Refinement</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Reasoning Critique</td>
+        <td>Yes</td>
+    </tr>
+    <hr/>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+
+## File Format
 Annotaded data grouped by course and forums under each course is provided in an encrypted zip file at https://github.com/WING-NUS/NUS-MOOC-Transacts-Corpus/blob/master/data/nus-mooc-transacts-corpus-pswd-protected.zip
 For example, a file annotated threads from 'Lecture' forum of course warhol-001 is named as: warhol-001.lecture.1.csv
 
-Directory Structure:
---|__ Task1-Marking_Task
-  |__ Task2-Categorisation_Task_low_lvl
-  |__ Task2-Categorisation_Task_top_lvl 
+Directory Structure:<br/>
+--|__ Task1-Marking_Task <br/>
+  |__ Task2-Categorisation_Task_low_lvl <br/>
+  |__ Task2-Categorisation_Task_top_lvl <br/> 
 
 Each file 'Task1-Marking_Task' consists of following headers:
 "HITId","HITTypeId","Title","Description","Keywords","Reward","CreationTime","MaxAssignments","RequesterAnnotation","AssignmentDurationInSeconds","AutoApprovalDelayInSeconds","Expiration","NumberOfSimilarHITs","LifetimeInSeconds","AssignmentId","WorkerId","AssignmentStatus","AcceptTime","SubmitTime","AutoApprovalTime","ApprovalTime","RejectionTime","RequesterFeedback","WorkTimeInSeconds","LifetimeApprovalRate","Last30DaysApprovalRate","Last7DaysApprovalRate","Input.threadtype","Input.threadtitle","Input.posts","Input.inst_post", Answer.1, Answer.2,....Answer.n (where n is the total number of posts in the thread.)
 
 
-ACKNOWLEDGEMENTS
-----------------
+## ACKNOWLEDGEMENTS
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
