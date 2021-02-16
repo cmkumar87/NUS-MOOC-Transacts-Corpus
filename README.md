@@ -83,42 +83,42 @@ Task 1:
     <tr>
         <td></td>
         <td>Paraphrase</td>
-        <td></td>
+        <td>Yes</td>
     </tr>
     <tr>
         <td></td>
         <td>Integration & Summing up</td>
-        <td></td>
+        <td>Yes</td>
     </tr>
     <tr>
         <td></td>
         <td>Agreement</td>
-        <td></td>
+        <td>Yes</td>
     </tr>
     <tr>
         <td></td>
         <td>Disagreement</td>
-        <td></td>
+        <td>Yes</td>
     </tr>
     <tr>
         <td></td>
         <td>Generic Answer</td>
-        <td></td>
+        <td>No</td>
     </tr>
     <tr>
         <td></td>
         <td>Appreciation</td>
-        <td></td>
+        <td>No</td>
     </tr>
     <tr>
         <td>Social</td>
         <td>Other logistics</td>
-        <td></td>
+        <td>No</td>
     </tr>
     <tr>
-        <td>Social</td>
-        <td>Social</td>
         <td></td>
+        <td>Social</td>
+        <td>No</td>
     </tr>
 </table>
 
