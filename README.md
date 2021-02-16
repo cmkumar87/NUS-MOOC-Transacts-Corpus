@@ -10,7 +10,7 @@ All rights reserved.
 For access and use, please fill out the academic research purpose license form at http://bit.ly/wing-nus-mooc-transacts-corpus-request-form. 
 We hold personal liability for the data to NUS and Coursera. We will review your request and get back to you within five (5) business days.
 
-Citation:
+### Citation:
 
 If you use the corpus for your research please cite:
 
@@ -23,11 +23,11 @@ If you use the corpus for your research please cite:
 }
 ```
 
-# Data
+## Data
 Repository contains serially annotated data for 3 natural language processing tasks on MOOC discussion threads. 
 Task 1: 
 
-## Annotation Categories
+### Annotation Categories
 
 <table>
     <tr>
@@ -108,5 +108,5 @@ Each file 'Task1-Marking_Task' consists of following headers:
 "HITId","HITTypeId","Title","Description","Keywords","Reward","CreationTime","MaxAssignments","RequesterAnnotation","AssignmentDurationInSeconds","AutoApprovalDelayInSeconds","Expiration","NumberOfSimilarHITs","LifetimeInSeconds","AssignmentId","WorkerId","AssignmentStatus","AcceptTime","SubmitTime","AutoApprovalTime","ApprovalTime","RejectionTime","RequesterFeedback","WorkTimeInSeconds","LifetimeApprovalRate","Last30DaysApprovalRate","Last7DaysApprovalRate","Input.threadtype","Input.threadtitle","Input.posts","Input.inst_post", Answer.1, Answer.2,....Answer.n (where n is the total number of posts in the thread.)
 
 
-## ACKNOWLEDGEMENTS
+### ACKNOWLEDGEMENTS
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
