@@ -145,6 +145,26 @@ Each file 'Task1-Marking_Task' consists of following headers:<br/>
 "Input.threadtype", "Input.threadtitle", "Input.posts", "Input.inst_post", <br/>
 "Answer.1", "Answer.2", ... "Answer.n" (where n is the total number of posts in the thread.)
 </code> </pre>
+Each Answer.x is either Marked or Unmarked by the annotator
+
+Each file 'Task2-Categorisation_Task_top_lvl' consists of following headers:<br/>
+<pre><code>
+"HITId", "HITTypeId", "Title", "Description", "Keywords", "Reward", <br/>
+"CreationTime", "MaxAssignments", "RequesterAnnotation", "AssignmentDurationInSeconds", <br/> 
+"AutoApprovalDelayInSeconds", "Expiration", "NumberOfSimilarHITs", "LifetimeInSeconds", <br/>
+"AssignmentId", "WorkerId", "AssignmentStatus", "AcceptTime", "SubmitTime", <br/>
+"AutoApprovalTime", "ApprovalTime", "RejectionTime", "RequesterFeedback", <br/> 
+"WorkTimeInSeconds", "LifetimeApprovalRate", "Last30DaysApprovalRate", "Last7DaysApprovalRate", <br/>
+"Input.threadtype", "Input.threadtitle", "Input.posts", "Input.inst_post", <br/>
+"Answer.1_discourse_type", ..., "Answer.X_discourse_type", "Answer.noreply", "Approve", "Reject"
+</code> </pre>
+Each Answer.x is is a top level discourse category (see table above) for each Marked post from the previous task output
+
+File format for Task2-Categorisation_Task_low_lvl is similar except the discourse categories are chosen from low level discourse category (see table above)
+
+
+#### Annotators
+All annotators were crowdworkers recruited from Amazon MTruk platform.
 
 ### ACKNOWLEDGEMENTS
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
