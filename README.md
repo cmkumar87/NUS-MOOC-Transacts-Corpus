@@ -50,7 +50,6 @@ Task 1:
         <td>Justification Request</td>
         <td>Yes</td>
     </tr>
-    <hr/>
     <tr>
         <td>Elaborates</td>
         <td>Extension</td>
@@ -76,7 +75,6 @@ Task 1:
         <td>Reasoning Critique</td>
         <td>Yes</td>
     </tr>
-    <hr/>
     <tr>
         <td></td>
         <td></td>
@@ -100,13 +98,18 @@ Annotaded data grouped by course and forums under each course is provided in an 
 For example, a file annotated threads from 'Lecture' forum of course warhol-001 is named as: warhol-001.lecture.1.csv
 
 Directory Structure:<br/>
+<pre><code>
 --|__ Task1-Marking_Task <br/>
   |__ Task2-Categorisation_Task_low_lvl <br/>
   |__ Task2-Categorisation_Task_top_lvl <br/> 
+</code> </pre>
 
-Each file 'Task1-Marking_Task' consists of following headers:
-"HITId","HITTypeId","Title","Description","Keywords","Reward","CreationTime","MaxAssignments","RequesterAnnotation","AssignmentDurationInSeconds","AutoApprovalDelayInSeconds","Expiration","NumberOfSimilarHITs","LifetimeInSeconds","AssignmentId","WorkerId","AssignmentStatus","AcceptTime","SubmitTime","AutoApprovalTime","ApprovalTime","RejectionTime","RequesterFeedback","WorkTimeInSeconds","LifetimeApprovalRate","Last30DaysApprovalRate","Last7DaysApprovalRate","Input.threadtype","Input.threadtitle","Input.posts","Input.inst_post", Answer.1, Answer.2,....Answer.n (where n is the total number of posts in the thread.)
-
+Each file 'Task1-Marking_Task' consists of following headers:<br/>
+<pre><code>
+"HITId", "HITTypeId", "Title", "Description", "Keywords", "Reward", "CreationTime", "MaxAssignments", "RequesterAnnotation", "AssignmentDurationInSeconds", "AutoApprovalDelayInSeconds", "Expiration", "NumberOfSimilarHITs", "LifetimeInSeconds", "AssignmentId", "WorkerId", "AssignmentStatus", "AcceptTime", "SubmitTime", "AutoApprovalTime", "ApprovalTime", "RejectionTime", "RequesterFeedback", "WorkTimeInSeconds", "LifetimeApprovalRate", "Last30DaysApprovalRate", "Last7DaysApprovalRate", <br/>
+"Input.threadtype", "Input.threadtitle", "Input.posts", "Input.inst_post", 
+"Answer.1", "Answer.2", ... "Answer.n" (where n is the total number of posts in the thread.)
+</code> </pre>
 
 ### ACKNOWLEDGEMENTS
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
