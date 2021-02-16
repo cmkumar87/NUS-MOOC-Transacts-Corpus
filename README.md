@@ -76,24 +76,54 @@ Task 1:
         <td>Yes</td>
     </tr>
     <tr>
+        <td>Resolves</td>
+        <td>Completion</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
         <td></td>
-        <td></td>
+        <td>Paraphrase</td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td></td>
+        <td>Integration & Summing up</td>
         <td></td>
     </tr>
     <tr>
         <td></td>
+        <td>Agreement</td>
         <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Disagreement</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Generic Answer</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Appreciation</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Social</td>
+        <td>Other logistics</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Social</td>
+        <td>Social</td>
         <td></td>
     </tr>
 </table>
 
 
-## File Format
+### File Format
 Annotaded data grouped by course and forums under each course is provided in an encrypted zip file at https://github.com/WING-NUS/NUS-MOOC-Transacts-Corpus/blob/master/data/nus-mooc-transacts-corpus-pswd-protected.zip
 For example, a file annotated threads from 'Lecture' forum of course warhol-001 is named as: warhol-001.lecture.1.csv
 
@@ -106,8 +136,13 @@ Directory Structure:<br/>
 
 Each file 'Task1-Marking_Task' consists of following headers:<br/>
 <pre><code>
-"HITId", "HITTypeId", "Title", "Description", "Keywords", "Reward", "CreationTime", "MaxAssignments", "RequesterAnnotation", "AssignmentDurationInSeconds", "AutoApprovalDelayInSeconds", "Expiration", "NumberOfSimilarHITs", "LifetimeInSeconds", "AssignmentId", "WorkerId", "AssignmentStatus", "AcceptTime", "SubmitTime", "AutoApprovalTime", "ApprovalTime", "RejectionTime", "RequesterFeedback", "WorkTimeInSeconds", "LifetimeApprovalRate", "Last30DaysApprovalRate", "Last7DaysApprovalRate", <br/>
-"Input.threadtype", "Input.threadtitle", "Input.posts", "Input.inst_post", 
+"HITId", "HITTypeId", "Title", "Description", "Keywords", "Reward", <br/>
+"CreationTime", "MaxAssignments", "RequesterAnnotation", "AssignmentDurationInSeconds", <br/> 
+"AutoApprovalDelayInSeconds", "Expiration", "NumberOfSimilarHITs", "LifetimeInSeconds", <br/>
+"AssignmentId", "WorkerId", "AssignmentStatus", "AcceptTime", "SubmitTime", <br/>
+"AutoApprovalTime", "ApprovalTime", "RejectionTime", "RequesterFeedback", <br/> 
+"WorkTimeInSeconds", "LifetimeApprovalRate", "Last30DaysApprovalRate", "Last7DaysApprovalRate", <br/>
+"Input.threadtype", "Input.threadtitle", "Input.posts", "Input.inst_post", <br/>
 "Answer.1", "Answer.2", ... "Answer.n" (where n is the total number of posts in the thread.)
 </code> </pre>
 
