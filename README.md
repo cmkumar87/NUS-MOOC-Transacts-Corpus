@@ -24,8 +24,11 @@ If you use the corpus for your research please cite:
 ```
 
 ## Data
-Repository contains serially annotated data for 3 natural language processing tasks on MOOC discussion threads. 
-Task 1: 
+Repository contains serially annotated data for 3 natural language processing tasks on MOOC discussion threads. <br/>
+Given the complete thread of posts from a MOOC fo- rum up until an instructor intervenes (writes a post / comment), <br/>
+Task 1: to link the instructor post to the earlier student post(s) to which it acts as a reply or as a comment <br/>
+Task 2: to categorize the pair thus identified with the most suitable type(s) from our predefined inventory of discourse types in Table.
+Task 2 is subdivided into two where first we ask to classify the post pair with a Top level category (see table below) and then into a subcategory (see table below) beneath the chosen top level category. 
 
 ### Annotation Categories
 
