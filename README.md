@@ -165,9 +165,23 @@ Each Answer.x is is a top level discourse category (see table above) for each Ma
 
 File format for Task2-Categorisation_Task_low_lvl is similar except the discourse categories are chosen from low level discourse category (see table above)
 
+In all three files formats columns: "Input.posts", "Input.inst_post" are in html format. When processing your input we strongly recommend you to drop the columns to easily visualize the data and the annotation. 
+
+The following columns are an artefact of the MTurk system and are unlikely to be of use for model development. We recommend you to drop them as well before processing the annotations for model development. The columns are:
+
+<pre><code>
+"HITTypeId", "Title", "Description", "Keywords", "Reward", <br/>
+"CreationTime", "MaxAssignments", "RequesterAnnotation", "AssignmentDurationInSeconds", <br/> 
+"AutoApprovalDelayInSeconds", "Expiration", "NumberOfSimilarHITs", "LifetimeInSeconds", <br/>
+"AssignmentId", "AssignmentStatus", "AcceptTime", "SubmitTime", <br/>
+"AutoApprovalTime", "ApprovalTime", "RejectionTime", "RequesterFeedback", <br/> 
+"WorkTimeInSeconds", "LifetimeApprovalRate", "Last30DaysApprovalRate", "Last7DaysApprovalRate", <br/>
+</code> </pre>
 
 #### Annotators
-All annotators were crowdworkers recruited from Amazon MTruk platform.
+All annotators were crowdworkers recruited from Amazon MTruk platform. Each thread is annotated by 7 workers. You can aggregate the categories and calculate Inter Annotator Agreements using the scripts https://github.com/cmkumar87/NUS-MOOC-Transacts-Corpus/blob/master/scripts/analysis/fleiss_kappa_per_post.py and https://github.com/cmkumar87/NUS-MOOC-Transacts-Corpus/blob/master/scripts/analysis/fleiss_kappa_per_thread.py.
+
+If you have questions / issues with preprocessing and/or IAA please raise a github issue.
 
 ### ACKNOWLEDGEMENTS
 The corpus creation was partially funded by National University of Singapore (NUS) - Office of the Provost through Learning Innovation Fund - Technology (LIF-T) grant # C-252-000-123-001
