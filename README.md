@@ -11,9 +11,9 @@ For access and use, please fill out the academic research purpose license form a
 We hold personal liability for the data to NUS and Coursera. We will review your request and get back to you within five (5) business days.
 
 ### Citation:
+This dataset is proposed as part of the foll. Ph.D. thesis which can be downloaded here: [https://scholarbank.nus.edu.sg/handle/10635/155763](url)
 
 If you use the corpus for your research please cite:
-
 ```
 @phdthesis{Chandrasekaranthesis2019,
     author = {MUTHU KUMAR CHANDRASEKARAN},
